@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
             password: password,
         };
 
-        // Make an HTTP POST request to your backend API
+        // Make an HTTP POST request to your backend API.
         fetch('https://localhost:7286/api/Register/register', {
             method: 'POST',
             headers: {

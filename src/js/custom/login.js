@@ -1,42 +1,31 @@
 document.getElementById('login-form').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const Email = document.getElementById('username').value;
+    const Password = document.getElementById('password').value;
+    const apiUrl = 'https://localhost:7286/api/Authenticator/Login';
 
-    // Create an object to send in the POST request
-    const data = {
-        username: username,
-        password: password
-    };
+    // Create the URL with query parameters
+    const url = new URL(apiUrl);
+    url.searchParams.append('Email', Email);
+    url.searchParams.append('Password', Password);
 
-    // Send a POST request to the server
-    fetch('https://localhost:7286/api/Authenticator/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.json(); // Parse the JSON response
-        } else {
-            throw new Error('Login failed');
-        }
-    })
-    .then(data => {
-        // Here, you receive the JWT token in the response
-        const token = data.token;
-        localStorage.setItem('token', token); // Store the token in localStorage
-        localStorage.setItem('username', username); // Store the token in localStorage
-
-
-        // Redirect the user to another page or perform additional actions
-        window.location.href = 'index.html';
-    })
-    .catch(error => {
-        console.error('Login error:', error);
-        // Show an error message to the user
-    });
+    // Send the GET request
+    fetch(url)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            // Handle the response data
+            localStorage.setItem('token',data.token); // Store the token in localStorage
+            localStorage.setItem('username', data.username); // Store the username in localStorage
+            window.location.href = 'index.html';
+        })
+        .catch((error) => {
+            // Handle any errors, e.g., show an error message
+            console.error('Error:', error);
+        });
 });
