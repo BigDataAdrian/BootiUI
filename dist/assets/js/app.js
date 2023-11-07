@@ -128,68 +128,29 @@
               <div class="tyn-reply-group"></div>
             </div>
             `
-          if (!chatReply.querySelector('.tyn-reply-item').classList.contains('outgoing')) {
+          // Find the first element with the specified class
+          var itemList = document.querySelector(".tyn-reply-item");
+          // Check if the element exists
+          if (itemList) {
+              // Element with the class exists
+              if (!chatReply.querySelector('.tyn-reply-item').classList.contains('outgoing')) {
+                getInput !== "" && chatReply.insertAdjacentHTML("afterbegin", outgoingWraper);
+                getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+              } else {
+                getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+              }
+          } else {
             getInput !== "" && chatReply.insertAdjacentHTML("afterbegin", outgoingWraper);
             getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
-          } else {
-            getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
           }
+         
 
           chatInput.innerHTML = "";
           let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
           let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
           simpleBody.getScrollElement().scrollTop = height;
           console.log("Se dio enter");
-          const token = localStorage.getItem('token');
-          const username = localStorage.getItem('username');
-          const chatusername = localStorage.getItem('chatusername');
-          const apiUrl = 'https://localhost:7286/api/Chats/Message';
-
-          const requestBody = {
-            Message: getInput,
-            Username: username,
-            Chatusername: chatusername
-          };
-
-          fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(requestBody),
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-              }
-              return response.json();
-            })
-            .then((data) => {
-              // Handle the response data
-              console.log(data);
-
-              data.answers.forEach((answer) => {
-                console.log(answer.text);
-                let chatBubble = `
-                <div class="tyn-reply-bubble">
-                    <div class="tyn-reply-text">
-                        ${answer.text}
-                    </div>
-                    ${chatActions}
-                </div>
-                `;
-                let outgoingWraper = `
-                  <div class="tyn-reply-item incoming">
-                    <div class="tyn-reply-group"></div>
-                    <div class="tyn-reply-avatar"></div>
-                  </div>
-                  `
-                });
-            })
-            .catch((error) => {
-              console.error('Error:', error);
-            });
+          answer(getInput);
         })
 
         chatInput && chatInput.addEventListener("keypress", function (event) {
@@ -198,6 +159,9 @@
             chatSend.click();
           }
         });
+      },
+      receive: function () {
+        
       }
     },
     /*item : function(){
