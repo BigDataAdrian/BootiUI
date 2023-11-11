@@ -1,3 +1,173 @@
+// Add an event listener to the parent container
+document.getElementById('InputType').addEventListener('keypress', function (e) {
+    // Check if the pressed key is Enter (keycode 13)
+    if (e.keyCode === 13) {
+        // Check if the target of the event is an input element with a specific class or other identifying criteria
+        if (e.target.tagName === 'INPUT' && e.target.classList.contains('tyn-chat-form-input')) {
+            // Call your message handling function with the message
+            message(e.target.value);
+        }
+    }
+});
+
+document.addEventListener('change', function (event) {
+    var target = event.target;
+    if (target.classList.contains('file-upload')) {
+        var files = target.files;
+        var formData = new FormData();
+
+        for (var i = 0; i < files.length; i++) {
+            formData.append('myFiles[]', files[i]);
+        }
+
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const chatusername = localStorage.getItem('chatusername');
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://localhost:7286/api/Chats/Upload?Username=' + encodeURIComponent(username) + '&Chatusername=' + encodeURIComponent(chatusername), true);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var responseData = JSON.parse(xhr.responseText);
+                var files = responseData.files;
+                let chatReply = document.querySelector('#tynReply');
+                let chatBody = document.querySelector('#tynChatBody');
+
+                let chatBubble = "";
+                files.forEach(function (file) {
+                chatBubble += `
+                    <div class="tyn-reply-bubble">
+                    ${file}
+                    </div>
+                `;
+                });
+               
+                let outgoingWraper = `
+                <div class="tyn-reply-item outgoing">
+                <div class="tyn-reply-group"></div>
+                </div>
+                `
+                // Find the first element with the specified class
+                var itemList = document.querySelector(".tyn-reply-item");
+                // Check if the element exists
+                if (itemList) {
+                    // Element with the class exists
+                    if (!chatReply.querySelector('.tyn-reply-item').classList.contains('outgoing')) {
+                        responseData !== "" && chatReply.insertAdjacentHTML("afterbegin", outgoingWraper);
+                        responseData !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+                    } else {
+                        responseData !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+                    }
+                } else {
+                    responseData !== "" && chatReply.insertAdjacentHTML("afterbegin", outgoingWraper);
+                    responseData !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+                }
+
+                let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
+                let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
+                simpleBody.getScrollElement().scrollTop = height;
+
+                answer("");
+            }
+        };
+        xhr.onerror = function () {
+            console.log('Error occurred during the request.');
+        };
+
+        xhr.send(formData);
+    }
+});
+
+function UploadClick() {
+    var fileInput = document.querySelector('#file-upload-button');
+    fileInput.click(); // Trigger the click event on the file input
+}
+
+function sendinput() {
+    // Get the element by ID
+    var inputElement = document.getElementById("Message");
+
+    // Check if the element is a textarea
+    if (inputElement.tagName.toLowerCase() === 'textarea') {
+        // It's a textarea, get the value
+        var inputValue = inputElement.value;
+        message(inputValue);
+    } else if (inputElement.tagName.toLowerCase() === 'input') {
+        // It's an input, get the value
+        var inputValue = inputElement.value;
+
+        message(inputValue);
+    }
+}
+
+function SendSelect(selectElement) {
+    // Get the selected option value
+    var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+
+    // Do something with the selected value (e.g., log it)
+    message(selectedValue);
+}
+
+function message(text) {
+
+    // Get the div with the id "tynChatInput"
+    const chatInputDiv = document.getElementById("InputType");
+
+    // Get all form elements inside the div
+    const formElements = chatInputDiv.querySelectorAll("input, select, button");
+
+    // Disable each form element
+    formElements.forEach((element) => {
+        element.disabled = true;
+    });
+
+    // Get the specific element by its id
+    const inputElement = document.getElementById("general");
+
+    // Disable the element
+    if (inputElement) {
+        inputElement.disabled = true;
+    }
+
+    let chatReply = document.querySelector('#tynReply');
+    let chatBody = document.querySelector('#tynChatBody');
+
+    let getInput = text;
+    let chatBubble = `
+        <div class="tyn-reply-bubble">
+            <div class="tyn-reply-text">
+                ${getInput}
+            </div>
+        </div>
+        `;
+    let outgoingWraper = `
+        <div class="tyn-reply-item outgoing">
+          <div class="tyn-reply-group"></div>
+        </div>
+        `
+    // Find the first element with the specified class
+    var itemList = document.querySelector(".tyn-reply-item");
+    // Check if the element exists
+    if (itemList) {
+        // Element with the class exists
+        if (!chatReply.querySelector('.tyn-reply-item').classList.contains('outgoing')) {
+            getInput !== "" && chatReply.insertAdjacentHTML("afterbegin", outgoingWraper);
+            getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+        } else {
+            getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+        }
+    } else {
+        getInput !== "" && chatReply.insertAdjacentHTML("afterbegin", outgoingWraper);
+        getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+    }
+
+    let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
+    let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
+    simpleBody.getScrollElement().scrollTop = height;
+
+    answer(getInput);
+}
+
 function answer(text) {
     let chatReply = document.querySelector('#tynReply');
     let chatBody = document.querySelector('#tynChatBody');
@@ -7,46 +177,7 @@ function answer(text) {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const chatusername = localStorage.getItem('chatusername');
-    let chatActions = `
-    <ul class="tyn-reply-tools">
-        <li>
-            <button class="btn btn-icon btn-sm btn-transparent btn-pill" >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-smile-fill" viewBox="0 0 16 16">
-                  <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zM4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM10 8c-.552 0-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5S10.552 8 10 8z"></path>
-              </svg>
-            </button>
-        </li>
-        <li class="dropup-center">
-            <button class="btn btn-icon btn-sm btn-transparent btn-pill" data-bs-toggle="dropdown">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"></path>
-              </svg>
-            </button>
-            <div class="dropdown-menu dropdown-menu-xxs">
-                <ul class="tyn-list-links">
-                    <li>
-                        <a href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
-                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
-                            </svg>
-                            <span>Edit</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
-                            </svg>
-                            <span>Delete</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-    </ul>
-    `
+
     let chatAvatar = `<div class="tyn-reply-avatar">
         <div class="tyn-media tyn-size-md tyn-circle">
             <img src="${srcValue}" alt="">
@@ -54,6 +185,7 @@ function answer(text) {
     </div>
     `
     let chatBubble = '';
+    let inputEntry = '';
     //post
     // Define the data you want to send as the request body
     const requestData = {
@@ -81,24 +213,12 @@ function answer(text) {
             }
         })
         .then(data => {
-            data.answers.forEach(answer => {
+            //validate answers
+            data.answer.forEach(answer => {
                 // Access properties of each answer object
-                const text = answer.text;
-                const file = answer.file;
-                const link = answer.link;
-                const image = answer.image;
-                const video = answer.video;
-
-                chatBubble += `
-                <div class="tyn-reply-bubble">
-                    <div class="tyn-reply-text">
-                        ${text}
-                    </div>
-                    ${chatActions}
-                </div>
-                `;
+                chatBubble += answer;
             });
-
+            inputEntry = data.input;
         })
         .finally(() => {
 
@@ -118,6 +238,24 @@ function answer(text) {
             let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
             let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
             simpleBody.getScrollElement().scrollTop = height;
+
+            // Get the element by its ID
+            const divElement = document.getElementById("InputType");
+            // Set the new HTML content using innerHTML
+            divElement.innerHTML = inputEntry;
+
+            // Find the input and textarea elements within the div
+            const inputElement = divElement.querySelector("input[type='text']");
+            const textareaElement = divElement.querySelector("textarea");
+
+            // Check if the input element was found
+            if (inputElement) {
+                // Set focus to the input element
+                inputElement.focus();
+            } else if (textareaElement) {
+                // If there is no input, check if a textarea element exists and set focus to it
+                textareaElement.focus();
+            }
         })
         .catch(error => {
             // Handle any errors that occurred during the fetch or processing
