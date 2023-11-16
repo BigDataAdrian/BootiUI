@@ -35,13 +35,9 @@ document.addEventListener('change', function (event) {
 
                 let chatBubble = "";
                 files.forEach(function (file) {
-                chatBubble += `
-                    <div class="tyn-reply-bubble">
-                    ${file}
-                    </div>
-                `;
+                    chatBubble += file;
                 });
-               
+
                 let outgoingWraper = `
                 <div class="tyn-reply-item outgoing">
                 <div class="tyn-reply-group"></div>
@@ -229,10 +225,10 @@ function answer(text) {
             </div>
             `
             if (!chatReply.querySelector('.tyn-reply-item').classList.contains('incoming')) {
-                text !== "" && chatReply.insertAdjacentHTML("afterbegin", incominggWraper);
-                text !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+                chatReply.insertAdjacentHTML("afterbegin", incominggWraper);
+                chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
             } else {
-                text !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+                chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
             }
 
             let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
@@ -261,4 +257,25 @@ function answer(text) {
             // Handle any errors that occurred during the fetch or processing
             console.error('Error:', error);
         });
+}
+
+function filterChats() {
+    var chatFilterInput = document.getElementById('search');
+    var chatContainer = document.getElementById('Chats');
+    var filterText = chatFilterInput.value.toLowerCase();
+
+    // Get all chat items with class "tyn-aside-item"
+    var chatItems = chatContainer.querySelectorAll('.tyn-aside-item');
+
+    chatItems.forEach(function (chatItem) {
+        var chatName = chatItem.querySelector('.name').textContent.toLowerCase();
+        var chatContent = chatItem.querySelector('.content').textContent.toLowerCase();
+
+        // Check if the name or content contains the filter text
+        if (chatName.includes(filterText) || chatContent.includes(filterText)) {
+            chatItem.style.display = 'block'; // Show the chat item
+        } else {
+            chatItem.style.display = 'none'; // Hide the chat item
+        }
+    });
 }

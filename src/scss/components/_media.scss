@@ -78,6 +78,7 @@
         flex-grow: 1;
         gap: .25rem;
         white-space: nowrap;
+        //white-space: normal;
         max-width: 100%;
         overflow: hidden;
         .name{
@@ -86,7 +87,7 @@
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            white-space: normal;
             .username{
                 font-size: 70%;
                 font-weight: 400;

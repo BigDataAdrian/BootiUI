@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Token is valid, proceed to load your index.html
                 GetProfile();
                 GetChats();
+                document.getElementById('search').addEventListener('keyup', function () {
+                    filterChats();
+                });
             }
         }
     }
@@ -32,7 +35,26 @@ function parseJwt(token) {
         return null; // Invalid token
     }
 }
+function filterChats() {
+    var chatFilterInput = document.getElementById('search');
+    var chatContainer = document.getElementById('Chats');
+    var filterText = chatFilterInput.value.toLowerCase();
 
+    // Get all chat items with class "tyn-aside-item"
+    var chatItems = chatContainer.querySelectorAll('.tyn-aside-item');
+
+    chatItems.forEach(function (chatItem) {
+        var chatName = chatItem.querySelector('.name').textContent.toLowerCase();
+        var chatContent = chatItem.querySelector('.content').textContent.toLowerCase();
+
+        // Check if the name or content contains the filter text
+        if (chatName.includes(filterText) || chatContent.includes(filterText)) {
+            chatItem.style.display = 'block'; // Show the chat item
+        } else {
+            chatItem.style.display = 'none'; // Hide the chat item
+        }
+    });
+}
 // Add a click event listener to the logout button
 const logoutButton = document.getElementById('logout-button');
 if (logoutButton) {
@@ -222,13 +244,7 @@ function LoadChat(Chatusername) {
             data.history.forEach(message => {
                 if (message.origin == 1) {
                     let getInput = message.message;
-                    let chatBubble = `
-                        <div class="tyn-reply-bubble">
-                            <div class="tyn-reply-text">
-                                ${getInput}
-                            </div>
-                        </div>
-                        `;
+                    let chatBubble =getInput;
                     let outgoingWraper = `
                         <div class="tyn-reply-item outgoing">
                           <div class="tyn-reply-group"></div>
@@ -264,7 +280,7 @@ function LoadChat(Chatusername) {
                         </div>
                     </div>
                     `
-                    let chatBubble = '<div class=\"tyn-reply-bubble\"><div class=\"tyn-reply-text\">' + text + '</div></div>';
+                    let chatBubble = text;
                     let inputEntry = '';
 
                     let incominggWraper = `
@@ -294,6 +310,11 @@ function LoadChat(Chatusername) {
                     simpleBody.getScrollElement().scrollTop = height;
                 }
             });
+
+             // Get the element by its ID
+             const divElement = document.getElementById("InputType");
+             // Set the new HTML content using innerHTML
+             divElement.innerHTML = data.input;
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
