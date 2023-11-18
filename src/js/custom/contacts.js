@@ -58,13 +58,10 @@ function filterChats() {
 function GetChats() {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
-    // Replace 'YOUR_API_ENDPOINT' with the actual endpoint of your API
-    const apiUrl = 'https://localhost:7286/api/Contacts/LoadChats';
-
-    // Replace 'YOUR_AUTH_TOKEN' with the actual token you want to send for validation
+    const baseurl = localStorage.getItem('baseurl');
+    const apiUrl = baseurl + 'api/Contacts/LoadChats';
     const authToken = token;
 
-    // Create a JSON object with the data you want to send
     const data = {
         Username: username
     };
@@ -152,7 +149,8 @@ function LoadChat(Chatusername) {
     //Load history and chat information
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
-    const apiUrl = 'https://localhost:7286/api/Contacts/GetChat';
+    const baseurl = localStorage.getItem('baseurl');
+    const apiUrl = baseurl+ 'api/Contacts/GetChat';
 
     const headers = new Headers({
         'Authorization': `Bearer ${token}`

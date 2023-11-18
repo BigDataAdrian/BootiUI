@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Make an HTTP POST request to your backend API.
-        fetch('https://localhost:7286/api/Register/forgot', {
+        const baseurl = localStorage.getItem('baseurl');
+        fetch(baseurl+ 'api/Register/forgot', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
