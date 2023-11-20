@@ -204,7 +204,7 @@ $reply-base: #{$app-prefix}reply;
 
 .#{$app-prefix}chat{
     --content-gap-x: #{$root-body-gap-x};
-    --content-gap-y: 1.5rem;
+    --content-gap-y: .5rem;
     --content-bg: #{$root-body-bg};
     --aside-gap-x: #{$root-body-gap-x};
     --aside-gap-y: 1.5rem;
