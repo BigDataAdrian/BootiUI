@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(baseurl + `api/Contacts/GetChats?search=${inputValue}`, requestOptions)
             .then(response => response.json())
             .then((data) => {
-
+                const parentElement = document.getElementById("suggestions-container");
+                parentElement.innerHTML = "";
                 data.forEach(item => {
                     // Create the list item element
                     const listItem = document.createElement("li");
@@ -245,13 +246,16 @@ function GetChats() {
                 const listItem = document.createElement("li");
                 listItem.classList.add("tyn-aside-item", "js-toggle-main", item.active);
                 listItem.id = "Chat_" + item.username;
+                listItem.onclick = function () {
+                    LoadChat(item.username);
+                };
                 // Get the parent <ul> element by its ID
                 const parentElement = document.getElementById("Chats");
                 //preparate route
                 const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
                 // Create the inner HTML structure
                 listItem.innerHTML = `
-                    <div class="tyn-media-group" onclick="LoadChat('${item.username}')">
+                    <div class="tyn-media-group">
                         <div class="tyn-media tyn-size-lg">
                             <img src="${Picture}" alt="">
                         </div>
@@ -324,6 +328,22 @@ function LoadChat(Chatusername) {
         })
         .then(data => {
             //reset main chat window
+            let elm = document.querySelectorAll('.js-toggle-main');
+            if (elm) {
+                elm.forEach(item => {
+                    item.classList.remove('active')
+                    item.classList.add('inactive');
+                })
+            }
+
+            // Retrieve the element by ID
+            const retrievedElement = document.getElementById("Chat_" + Chatusername);
+
+            // Check if the element is found before trying to add classes
+            if (retrievedElement) {
+                // Add the same classes to the element
+                retrievedElement.classList.add("tyn-aside-item", "js-toggle-main", 'active');
+            }
             // Load the Chatname value into the span
             document.getElementById("Chatheader").textContent = data.title;
             document.getElementById("Chatusernameheader").textContent = data.username;
@@ -336,6 +356,9 @@ function LoadChat(Chatusername) {
             document.getElementById("Chatpictureinlineprofile").src = "images/Chats/" + data.username + "/Back/" + data.backPicture;
             var imgElement = document.getElementById("Chatpictureinlineheader");
             localStorage.setItem('chatusername', Chatusername); // Store the token in localStorage
+            //load selector list
+            const selectElement = document.getElementById("SelectType");
+            selectElement.value = data.selector;
             // History
             let chatBody = document.querySelector('#tynChatBody');
             let chatReply = document.querySelector('#tynReply');
@@ -679,6 +702,22 @@ function deleteChat() {
             }
 
             document.getElementById("tynReply").innerHTML = '';
+
+            // Get the element by ID
+            const listItemToRemove = document.getElementById('Chat_' + chatusername);
+            if (listItemToRemove) {
+                listItemToRemove.remove();
+            }
+
+            // Retrieve the element by ID
+            const retrievedElement = document.getElementById("Chat_booti");
+
+            // Check if the element is found before trying to add classes
+            if (retrievedElement) {
+                // Add the same classes to the element
+                retrievedElement.classList.add("tyn-aside-item", "js-toggle-main", 'active');
+            }
+            LoadChat('booti');
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -723,15 +762,28 @@ function LoadChatFromModal(chatusername) {
         .then(item => {
             // Create the list item element
             if (item.exist == 0) {
+
+                let elm = document.querySelectorAll('.js-toggle-main');
+                if (elm) {
+                    elm.forEach(item => {
+                        item.classList.remove('active')
+                        item.classList.add('inactive');
+                    })
+                }
+
                 const listItem = document.createElement("li");
                 listItem.classList.add("tyn-aside-item", "js-toggle-main", "active");
+                listItem.id = "Chat_" + item.username;
+                listItem.onclick = function () {
+                    LoadChat(item.username); // Replace 'booti' with the desired value or use item.active if applicable
+                };
                 // Get the parent <ul> element by its ID
                 const parentElement = document.getElementById("Chats");
                 //preparate route
                 const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
                 // Create the inner HTML structure
                 listItem.innerHTML = `
-                    <div class="tyn-media-group" onclick="LoadChat('${item.username}')">
+                    <div class="tyn-media-group">
                         <div class="tyn-media tyn-size-lg">
                             <img src="${Picture}" alt="">
                         </div>
@@ -755,27 +807,51 @@ function LoadChatFromModal(chatusername) {
 
                 // Append the generated list item to the parent element
                 parentElement.appendChild(listItem);
-            } else {
-                let elm = document.querySelectorAll('.js-toggle-main');
-                if (elm) {
-                    elm.forEach(item => {
-                        item.classList.remove('active')
-                        item.classList.add('inactive');
-                    })
-                }
-                // Retrieve the element by ID
-                const retrievedElement = document.getElementById("Chat_" + item.username); // Replace "yourIdValue" with the actual ID value
-
-                // Check if the element is found before trying to add classes
-                if (retrievedElement) {
-                    // Add the same classes to the element
-                    retrievedElement.classList.add("tyn-aside-item", "js-toggle-main", 'active');
-                }
             }
             LoadChat(item.username);
         })
         .catch(error => {
             // Handle any errors that occurred during the fetch or processing
+            console.error('Error:', error);
+        });
+}
+
+function SelectType() {
+    const selectElement = document.getElementById("SelectType");
+    // Get the selected value
+    const selectedValue = selectElement.value;
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    const chatusername = localStorage.getItem('chatusername');
+    const baseurl = localStorage.getItem('baseurl');
+    const apiUrl = baseurl + "api/Chats/SelectType";
+
+    const requestData = {
+        Username: username,
+        Chatusername: chatusername,
+        Type: selectedValue
+    };
+
+    // Make the fetch request
+    fetch(apiUrl, {
+        method: 'PATCH', // or 'GET', 'PUT', etc. depending on your API
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+        },
+        body: JSON.stringify(requestData)
+    })
+        .then(response => {
+            if (response.ok) {
+                // HTTP status code 200 indicates success
+                return response.json();
+            } else {
+                // Handle non-200 status codes (e.g., 500 for server error)
+                throw new Error('Request failed with status: ' + response.status);
+            }
+        })
+        .catch(error => {
+            // Handle errors here
             console.error('Error:', error);
         });
 }

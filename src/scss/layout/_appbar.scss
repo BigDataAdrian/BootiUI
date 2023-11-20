@@ -52,7 +52,7 @@ $appbar-nav-gap-x:                    $body-gap-x;
     &-logo{
         display: inline-flex;
         border-right: 1px solid var(--border-color);
-        padding: 1rem var(--#{$prefix}body-gap-x);
+        padding: .3rem var(--#{$prefix}body-gap-x);
     }
     &-nav{
         display: flex;
@@ -109,7 +109,7 @@ $appbar-nav-gap-x:                    $body-gap-x;
     .#{$app-prefix}appbar{
         --nav-gap-x: #{$appbar-nav-gap-x - $appbar-nav-item-gap-x};
         --nav-item-gap-x: #{$appbar-nav-item-gap-x-md};
-        --nav-icon-size:#{$root-size-lg};
+        --nav-icon-size:#{$root-size-md};
         --nav-icon-svg-size:#{$appbar-nav-icon-size-svg-md};
     }
 }
