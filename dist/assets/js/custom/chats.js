@@ -68,6 +68,26 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching data:', error));
     }
+
+    //load slider
+    var rangeInput = document.getElementById('Slider_size');
+    // Add an event listener to the range input for the 'input' event
+    rangeInput.addEventListener('input', function () {
+        var outputDiv = document.getElementById('SelectorInput');
+        // Read the value of the range slider
+        var sliderValue = rangeInput.value;
+
+        // Set the value as the height of the output div
+        outputDiv.style.maxHeight = sliderValue + 'px';
+    });
+
+    // Add an event listener to the range input for the 'change' event
+    rangeInput.addEventListener('change', function () {
+        // Read the value of the range slider and save it
+        savedValue = rangeInput.value;
+        SliderChange(savedValue);
+        // Optional: Use the savedValue variable elsewhere in your script or application.
+    });
 });
 document.getElementById('InputType').addEventListener('keypress', function (e) {
     // Check if the pressed key is Enter (keycode 13)
@@ -354,6 +374,8 @@ function LoadChat(Chatusername) {
             document.getElementById("Chatusernameprofile").textContent = data.username;
             document.getElementById("Chatpictureprofile").src = "images/Chats/" + data.username + "/Profile/" + data.profilePicture;
             document.getElementById("Chatpictureinlineprofile").src = "images/Chats/" + data.username + "/Back/" + data.backPicture;
+            document.getElementById('Slider_size').value = data.slider;
+
             var imgElement = document.getElementById("Chatpictureinlineheader");
             localStorage.setItem('chatusername', Chatusername); // Store the token in localStorage
             //load selector list
@@ -437,6 +459,13 @@ function LoadChat(Chatusername) {
             const divElement = document.getElementById("InputType");
             // Set the new HTML content using innerHTML
             divElement.innerHTML = data.input;
+            // Check if the element with id 'SelectorInput' exists
+            var selectorInput = document.getElementById('SelectorInput');
+
+            if (selectorInput) {
+                // If the element exists, update its style
+                selectorInput.style.maxHeight = data.slider + 'px';
+            }
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -609,7 +638,13 @@ function answer(text) {
             const divElement = document.getElementById("InputType");
             // Set the new HTML content using innerHTML
             divElement.innerHTML = inputEntry;
+            var selectorInput = document.getElementById('SelectorInput');
 
+            if (selectorInput) {
+                // If the element exists, update its style
+                var rangeInput = document.getElementById('Slider_size');
+                selectorInput.style.maxHeight = rangeInput.value + 'px';
+            }
             // Find the input and textarea elements within the div
             const inputElement = divElement.querySelector("input[type='text']");
             const textareaElement = divElement.querySelector("textarea");
@@ -830,6 +865,43 @@ function SelectType() {
         Username: username,
         Chatusername: chatusername,
         Type: selectedValue
+    };
+
+    // Make the fetch request
+    fetch(apiUrl, {
+        method: 'PATCH', // or 'GET', 'PUT', etc. depending on your API
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+        },
+        body: JSON.stringify(requestData)
+    })
+        .then(response => {
+            if (response.ok) {
+                // HTTP status code 200 indicates success
+                return response.json();
+            } else {
+                // Handle non-200 status codes (e.g., 500 for server error)
+                throw new Error('Request failed with status: ' + response.status);
+            }
+        })
+        .catch(error => {
+            // Handle errors here
+            console.error('Error:', error);
+        });
+}
+
+function SliderChange(value) {
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    const chatusername = localStorage.getItem('chatusername');
+    const baseurl = localStorage.getItem('baseurl');
+    const apiUrl = baseurl + "api/Chats/SliderChange";
+
+    const requestData = {
+        Username: username,
+        Chatusername: chatusername,
+        Size: value
     };
 
     // Make the fetch request

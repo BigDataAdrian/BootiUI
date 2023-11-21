@@ -15,7 +15,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     const url = new URL(apiUrl);
     url.searchParams.append('Email', Email);
     url.searchParams.append('Password', Password);
-
+    alert(url);
     // Send the GET request
     fetch(url)
         .then((response) => {
@@ -32,6 +32,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
         })
         .catch((error) => {
             // Handle any errors, e.g., show an error message
-            console.error('Error:', error);
+            console.error('Error:', error + " " + apiUrl);
+            alert(error);
         });
 });
