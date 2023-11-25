@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const token = localStorage.getItem('token');
+    const currentUrl = window.location.href; // Get the current URL with query parameters
     if (!token) {
         // No token found, redirect to the login page
+        localStorage.setItem('redirectUrl', currentUrl);
         window.location.href = 'login.html';
     } else {
         // Token exists, let's validate it
@@ -16,8 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.href = 'login.html';
             } else {
                 // Token is valid, proceed to load your index.html
-                GetProfile();
-                GetChats();
+             
                 document.getElementById('search').addEventListener('keyup', function () {
                     filterChats();
                 });
