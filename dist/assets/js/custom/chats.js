@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-contact');
     searchInput.addEventListener('input', handleInput);
+    GetProfile();
+    GetChats();
+    processQueryString();
 
     function handleInput() {
         const inputValue = searchInput.value.trim();
@@ -68,6 +71,26 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching data:', error));
     }
+
+    //load slider
+    var rangeInput = document.getElementById('Slider_size');
+    // Add an event listener to the range input for the 'input' event
+    rangeInput.addEventListener('input', function () {
+        var outputDiv = document.getElementById('SelectorInput');
+        // Read the value of the range slider
+        var sliderValue = rangeInput.value;
+
+        // Set the value as the height of the output div
+        outputDiv.style.maxHeight = sliderValue + 'px';
+    });
+
+    // Add an event listener to the range input for the 'change' event
+    rangeInput.addEventListener('change', function () {
+        // Read the value of the range slider and save it
+        savedValue = rangeInput.value;
+        SliderChange(savedValue);
+        // Optional: Use the savedValue variable elsewhere in your script or application.
+    });
 });
 document.getElementById('InputType').addEventListener('keypress', function (e) {
     // Check if the pressed key is Enter (keycode 13)
@@ -79,6 +102,25 @@ document.getElementById('InputType').addEventListener('keypress', function (e) {
         }
     }
 });
+
+// Function to read the query string parameter and call another function
+function processQueryString() {
+    // Function to get the value of a parameter from the query string
+    function getQueryStringParameter(parameter) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(parameter);
+    }
+    // Get the 'Booti' value from the query string
+    const queryStringParam = getQueryStringParameter('Chat');
+
+    // Check if the parameter exists before calling the function
+    if (queryStringParam !== null) {
+        LoadChatFromQuery(queryStringParam)
+    } else {
+        console.log("Query parameter 'Booti' not found.");
+        // Handle the case where the parameter is not present
+    }
+}
 
 document.addEventListener('change', function (event) {
     var target = event.target;
@@ -197,8 +239,8 @@ function GetProfile() {
             // Update the <span> elements with the response data
             document.getElementById("Email").textContent = data.email;
             document.getElementById("Name").textContent = data.name;
-            document.getElementById("Profilepicture").src = "images/Profiles/" + data.email + "/Profile/" + data.picture;
-            document.getElementById("Profilepicturemodal").src = "images/Profiles/" + data.email + "/Profile/" + data.picture;
+            document.getElementById("Profilepicture").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+            document.getElementById("Profilepicturemodal").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
         })
         .catch(error => {
             console.error("Error:", error);
@@ -280,7 +322,9 @@ function GetChats() {
                 // Append the generated list item to the parent element
                 parentElement.appendChild(listItem);
                 //Load data if active
-                if (item.active == "active") {
+                const urlParams = new URLSearchParams(window.location.search);
+                var ValidateQuery = urlParams.get('Chat');
+                if (item.active == "active" && ValidateQuery == null) {
                     LoadChat(item.username);
                 }
             });
@@ -354,11 +398,24 @@ function LoadChat(Chatusername) {
             document.getElementById("Chatusernameprofile").textContent = data.username;
             document.getElementById("Chatpictureprofile").src = "images/Chats/" + data.username + "/Profile/" + data.profilePicture;
             document.getElementById("Chatpictureinlineprofile").src = "images/Chats/" + data.username + "/Back/" + data.backPicture;
+            document.getElementById('Slider_size').value = data.slider;
+
             var imgElement = document.getElementById("Chatpictureinlineheader");
             localStorage.setItem('chatusername', Chatusername); // Store the token in localStorage
-            //load selector list
+            // Load selector list
             const selectElement = document.getElementById("SelectType");
-            selectElement.value = data.selector;
+
+            // Assuming data.selector contains the value you want to select
+            const valueToSelect = data.selector;
+
+            // Loop through options to find the one with the desired value
+            for (let i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === valueToSelect) {
+                    // Set the selected property of the found option to true
+                    selectElement.options[i].selected = true;
+                    break; // Exit the loop since we found the matching option
+                }
+            }
             // History
             let chatBody = document.querySelector('#tynChatBody');
             let chatReply = document.querySelector('#tynReply');
@@ -437,6 +494,13 @@ function LoadChat(Chatusername) {
             const divElement = document.getElementById("InputType");
             // Set the new HTML content using innerHTML
             divElement.innerHTML = data.input;
+            // Check if the element with id 'SelectorInput' exists
+            var selectorInput = document.getElementById('SelectorInput');
+
+            if (selectorInput) {
+                // If the element exists, update its style
+                selectorInput.style.maxHeight = data.slider + 'px';
+            }
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -609,7 +673,13 @@ function answer(text) {
             const divElement = document.getElementById("InputType");
             // Set the new HTML content using innerHTML
             divElement.innerHTML = inputEntry;
+            var selectorInput = document.getElementById('SelectorInput');
 
+            if (selectorInput) {
+                // If the element exists, update its style
+                var rangeInput = document.getElementById('Slider_size');
+                selectorInput.style.maxHeight = rangeInput.value + 'px';
+            }
             // Find the input and textarea elements within the div
             const inputElement = divElement.querySelector("input[type='text']");
             const textareaElement = divElement.querySelector("textarea");
@@ -809,6 +879,105 @@ function LoadChatFromModal(chatusername) {
                 parentElement.appendChild(listItem);
             }
             LoadChat(item.username);
+            const tynmainElement = document.getElementById('tynMain');
+
+            // Check if the element exists
+            if (tynmainElement) {
+                // Add a new attribute to the 'style' property
+                tynmainElement.classList.add('main-shown');
+                // Replace 'your-css-property' with the actual CSS property you want to add,
+            }
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the fetch or processing
+            console.error('Error:', error);
+        });
+}
+
+function LoadChatFromQuery(chatusername) {
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    const baseurl = localStorage.getItem('baseurl');
+    const requestData = {
+        Username: username,
+        Chatusername: chatusername
+    };
+
+    fetch(baseurl + 'api/Chats/AddNewChat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token, // If you have authorization in place
+        },
+        body: JSON.stringify(requestData)
+    })
+        .then(response => {
+            if (response.ok) {
+                // HTTP status code 200 indicates success
+                return response.json();
+            } else {
+                // Handle non-200 status codes (e.g., 500 for server error)
+                throw new Error('Request failed with status: ' + response.status);
+            }
+        })
+        .then(item => {
+            // Create the list item element
+            if (item.exist == 0) {
+
+                let elm = document.querySelectorAll('.js-toggle-main');
+                if (elm) {
+                    elm.forEach(item => {
+                        item.classList.remove('active')
+                        item.classList.add('inactive');
+                    })
+                }
+
+                const listItem = document.createElement("li");
+                listItem.classList.add("tyn-aside-item", "js-toggle-main", "active");
+                listItem.id = "Chat_" + item.username;
+                listItem.onclick = function () {
+                    LoadChat(item.username); // Replace 'booti' with the desired value or use item.active if applicable
+                };
+                // Get the parent <ul> element by its ID
+                const parentElement = document.getElementById("Chats");
+                //preparate route
+                const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
+                // Create the inner HTML structure
+                listItem.innerHTML = `
+                    <div class="tyn-media-group">
+                        <div class="tyn-media tyn-size-lg">
+                            <img src="${Picture}" alt="">
+                        </div>
+                        <div class="tyn-media-col">
+                            <div class="tyn-media-row">
+                                <h6 class="name">${item.title}</h6>
+                                <div class="indicator varified">
+                                    <!-- check-circle-fill -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="tyn-media-row has-dot-sap">
+                                <p class="content">${item.description}</p>
+                                <span class="meta">@${item.username}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Append the generated list item to the parent element
+                parentElement.appendChild(listItem);
+            }
+            LoadChat(item.username);
+            const tynmainElement = document.getElementById('tynMain');
+
+            // Check if the element exists
+            if (tynmainElement) {
+                // Add a new attribute to the 'style' property
+                tynmainElement.classList.add('main-shown');
+                // Replace 'your-css-property' with the actual CSS property you want to add,
+            }
         })
         .catch(error => {
             // Handle any errors that occurred during the fetch or processing
@@ -830,6 +999,43 @@ function SelectType() {
         Username: username,
         Chatusername: chatusername,
         Type: selectedValue
+    };
+
+    // Make the fetch request
+    fetch(apiUrl, {
+        method: 'PATCH', // or 'GET', 'PUT', etc. depending on your API
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+        },
+        body: JSON.stringify(requestData)
+    })
+        .then(response => {
+            if (response.ok) {
+                // HTTP status code 200 indicates success
+                return response.json();
+            } else {
+                // Handle non-200 status codes (e.g., 500 for server error)
+                throw new Error('Request failed with status: ' + response.status);
+            }
+        })
+        .catch(error => {
+            // Handle errors here
+            console.error('Error:', error);
+        });
+}
+
+function SliderChange(value) {
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    const chatusername = localStorage.getItem('chatusername');
+    const baseurl = localStorage.getItem('baseurl');
+    const apiUrl = baseurl + "api/Chats/SliderChange";
+
+    const requestData = {
+        Username: username,
+        Chatusername: chatusername,
+        Size: value
     };
 
     // Make the fetch request
