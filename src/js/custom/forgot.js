@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (response.ok) {
-                // Registration was successful, you can handle the response here
+                alert("Se envio un correo con el link de recuperacion");
+                window.location.reload();
             } else {
                 // Handle registration errors
                 console.error('Forgot failed');

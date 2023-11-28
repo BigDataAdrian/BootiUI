@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (response.ok) {
-                // Registration was successful, you can handle the response here
+                alert('Registro exitoso, favor de revisar su bandeja de entrada y seguir el enlace de verificacion');
+                window.location.reload();
             } else {
                 // Handle registration errors
                 console.error('Registration failed');

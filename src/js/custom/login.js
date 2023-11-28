@@ -20,9 +20,11 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     fetch(url)
         .then((response) => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.text().then((errorText) => {
+                    throw new Error(errorText);
+                });
             }
-            return response.json();
+           
         })
         .then((data) => {
             // Handle the response data
@@ -39,8 +41,6 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
             }
         })
         .catch((error) => {
-            // Handle any errors, e.g., show an error message
-            console.error('Error:', error + " " + apiUrl);
             alert(error);
         });
 });
