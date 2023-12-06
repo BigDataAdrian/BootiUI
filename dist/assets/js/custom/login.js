@@ -3,7 +3,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
 
     const Email = document.getElementById('username').value;
     const Password = document.getElementById('password').value;
-    const apiUrl = 'https://localhost:7286/api/Authenticator/Login';
+    const apiUrl = 'https://booti.website/api/Authenticator/Login';
 
     // Create the URL with query parameters
     const url = new URL(apiUrl);
