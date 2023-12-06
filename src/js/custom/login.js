@@ -41,7 +41,8 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
             }
         })
         .catch((error) => {
-            alert(error);
+            
+            swal ("Error",""+ error , "error");
         });
 });
 
