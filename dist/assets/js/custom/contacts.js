@@ -94,7 +94,7 @@ function GetChats() {
                 // Get the parent <ul> element by its ID
                 const parentElement = document.getElementById("Chats");
                 //preparate route
-                const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
+                const Picture = baseurl + "api/Files/GetChatProfilePicture?imageName=" + item.picture;
                 // Create the inner HTML structure
                 listItem.innerHTML = `
                     <div class="tyn-media-group" onclick="LoadChat('${item.username}')">
@@ -150,7 +150,7 @@ function LoadChat(Chatusername) {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const baseurl = localStorage.getItem('baseurl');
-    const apiUrl = baseurl+ 'api/Contacts/GetChat';
+    const apiUrl = baseurl + 'api/Contacts/GetChat';
 
     const headers = new Headers({
         'Authorization': `Bearer ${token}`
@@ -170,12 +170,19 @@ function LoadChat(Chatusername) {
         })
         .then(data => {
             //reset main chat window
+            // Get the element by its ID
+            var element = document.getElementById("tynMain");
+
+            // Make the element visible by setting its display style to "block"
+            element.style.display = "block";
             // Load the Chatname value into the span
             document.getElementById("Chatheader").textContent = data.title;
             document.getElementById("Chatdescription").textContent = data.description;
             document.getElementById("Chatusernameheader").textContent = '@' + data.username;
-            document.getElementById("Chatpictureheader").src = "images/Chats/" + data.username + "/Profile/" + data.profilePicture;
-            document.getElementById("Chatpicturecover").src = "images/Chats/" + data.username + "/Back/" + data.backPicture;
+            const Picture = baseurl + "api/Files/GetChatProfilePicture?imageName=" + data.profilePicture;
+            document.getElementById("Chatpictureheader").src = Picture;
+            const Cover = baseurl + "api/Files/GetChatCoverPicture?imageName=" + data.backPicture;
+            document.getElementById("Chatpicturecover").src =Cover;
             document.getElementById('facebook').href = data.facebook;
             document.getElementById('twitter').href = data.twitter;
             document.getElementById('instagram').href = data.instagram;

@@ -154,7 +154,7 @@ fetch(apiUrl + `?Username=${username}`, requestOptions)
     document.getElementById("Profilepicture").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
     document.getElementById("Avatarpicture").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
     document.getElementById("avatarpicture2").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
-    document.getElementById("Profilecover").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+    document.getElementById("Profilecover").src = baseurl + "api/Files/GetCoverPicture?imageName=" + data.cover;
   })
   .catch((error) => {
     console.error("Error:", error);

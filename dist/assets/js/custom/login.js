@@ -24,6 +24,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
                     throw new Error(errorText);
                 });
             }
+            return response.json(); // Assuming your API returns JSON
            
         })
         .then((data) => {
@@ -41,7 +42,8 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
             }
         })
         .catch((error) => {
-            alert(error);
+            
+            swal ("Error",""+ error , "error");
         });
 });
 

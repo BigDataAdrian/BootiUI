@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const parentElement = document.getElementById("suggestions-container");
                     parentElement.innerHTML = "";
                     //preparate route
-                    const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
+                    const Picture = baseurl + "api/Files/GetChatProfilePicture?imageName=" + item.picture;
+
                     // Create the inner HTML structure
                     listItem.innerHTML = `
                     <div class="tyn-media-group" onclick="LoadChatFromModal('${item.username}')">
@@ -294,7 +295,8 @@ function GetChats() {
                 // Get the parent <ul> element by its ID
                 const parentElement = document.getElementById("Chats");
                 //preparate route
-                const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
+
+                const Picture = baseurl + "api/Files/GetChatProfilePicture?imageName=" + item.picture;
                 // Create the inner HTML structure
                 listItem.innerHTML = `
                     <div class="tyn-media-group">
@@ -388,16 +390,18 @@ function LoadChat(Chatusername) {
                 // Add the same classes to the element
                 retrievedElement.classList.add("tyn-aside-item", "js-toggle-main", 'active');
             }
+            // Get the element by its ID
+
             // Load the Chatname value into the span
             document.getElementById("Chatheader").textContent = data.title;
             document.getElementById("Chatusernameheader").textContent = data.username;
-            document.getElementById("Chatpictureheader").src = "images/Chats/" + data.username + "/Profile/" + data.profilePicture;
-            document.getElementById("Chatpictureinlineheader").src = "images/Chats/" + data.username + "/Profile/" + data.profilePicture;
+            document.getElementById("Chatpictureheader").src = baseurl + "api/Files/GetChatProfilePicture?imageName=" + data.profilePicture;
+            document.getElementById("Chatpictureinlineheader").src = baseurl + "api/Files/GetChatProfilePicture?imageName=" + data.profilePicture;
 
             document.getElementById("Chatprofile").textContent = data.title;
             document.getElementById("Chatusernameprofile").textContent = data.username;
-            document.getElementById("Chatpictureprofile").src = "images/Chats/" + data.username + "/Profile/" + data.profilePicture;
-            document.getElementById("Chatpictureinlineprofile").src = "images/Chats/" + data.username + "/Back/" + data.backPicture;
+            document.getElementById("Chatpictureprofile").src = baseurl + "api/Files/GetChatProfilePicture?imageName=" + data.profilePicture;
+            document.getElementById("Chatpictureinlineprofile").src = baseurl + "api/Files/GetChatCoverPicture?imageName=" + data.coverPicture;
             document.getElementById('Slider_size').value = data.slider;
 
             var imgElement = document.getElementById("Chatpictureinlineheader");
@@ -830,7 +834,6 @@ function LoadChatFromModal(chatusername) {
             }
         })
         .then(item => {
-            // Create the list item element
             if (item.exist == 0) {
 
                 let elm = document.querySelectorAll('.js-toggle-main');
@@ -921,7 +924,6 @@ function LoadChatFromQuery(chatusername) {
             }
         })
         .then(item => {
-            // Create the list item element
             if (item.exist == 0) {
 
                 let elm = document.querySelectorAll('.js-toggle-main');
