@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+    LoadColorTheme();
 });
 
 function parseJwt(token) {
@@ -197,6 +198,15 @@ function LoadChat(Chatusername) {
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
         });
+}
+
+
+function LoadColorTheme(){
+    const savedColor = localStorage.getItem('selectedColor');
+    if (savedColor) {
+      const root = document.documentElement;
+      root.style.setProperty('--bs-primary', savedColor);
+    }
 }
 
 ////Get profile
