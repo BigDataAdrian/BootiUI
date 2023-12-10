@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     GetProfile();
     GetChats();
     processQueryString();
-
+    ColorTheme();
     function handleInput() {
         const inputValue = searchInput.value.trim();
         if (inputValue === '') {
@@ -602,6 +602,7 @@ function message(text) {
 }
 
 function answer(text) {
+    showAndEnableTypingEffect();
     let chatReply = document.querySelector('#tynReply');
     let chatBody = document.querySelector('#tynChatBody');
     // Find the img element by its id
@@ -655,7 +656,7 @@ function answer(text) {
             inputEntry = data.input;
         })
         .finally(() => {
-
+            hideAndDisableTypingEffect();
             let incominggWraper = `
             <div class="tyn-reply-item incoming">
                 ${chatAvatar}
@@ -1062,4 +1063,42 @@ function SliderChange(value) {
             // Handle errors here
             console.error('Error:', error);
         });
+}
+
+function ColorTheme() {
+    const root = document.documentElement;
+    const colorInput = document.getElementById('Primary-Color');
+
+    // Load the previously selected color from local storage
+    const savedColor = localStorage.getItem('selectedColor');
+
+    // Set the input color to the last selected color or a default color
+    colorInput.value = savedColor || '#2563eb';
+
+    // Set the --bs-primary CSS variable to the selected color
+    root.style.setProperty('--bs-primary', colorInput.value);
+
+    // Add an input event listener to the color input
+    colorInput.addEventListener('input', function () {
+        // Get the selected color value from the input
+        const selectedColor = colorInput.value;
+
+        // Change the value of --bs-primary to the selected color
+        root.style.setProperty('--bs-primary', selectedColor);
+
+        // Save the selected color to local storage
+        localStorage.setItem('selectedColor', selectedColor);
+    });
+}
+
+function showAndEnableTypingEffect() {
+    var processingElement = document.getElementById('Processing');
+    processingElement.classList.remove('hidden');
+    processingElement.classList.add('typing');
+}
+
+function hideAndDisableTypingEffect() {
+    var processingElement = document.getElementById('Processing');
+    processingElement.classList.remove('typing');
+    processingElement.classList.add('hidden');
 }

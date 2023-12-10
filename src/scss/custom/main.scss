@@ -1,0 +1,19 @@
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+.typing {
+    animation: blink 1.5s infinite;
+}
+
+.hidden {
+    display: none;
+}

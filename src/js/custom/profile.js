@@ -159,3 +159,11 @@ fetch(apiUrl + `?Username=${username}`, requestOptions)
   .catch((error) => {
     console.error("Error:", error);
   });
+  LoadColorTheme();
+  function LoadColorTheme(){
+    const savedColor = localStorage.getItem('selectedColor');
+    if (savedColor) {
+      const root = document.documentElement;
+      root.style.setProperty('--bs-primary', savedColor);
+    }
+}
