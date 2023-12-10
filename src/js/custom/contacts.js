@@ -200,6 +200,7 @@ function LoadChat(Chatusername) {
         });
 }
 
+
 function LoadColorTheme(){
     const savedColor = localStorage.getItem('selectedColor');
     if (savedColor) {
@@ -207,3 +208,42 @@ function LoadColorTheme(){
       root.style.setProperty('--bs-primary', savedColor);
     }
 }
+
+////Get profile
+const token = localStorage.getItem("token");
+const username = localStorage.getItem("username");
+const baseurl = localStorage.getItem("baseurl");
+const apiUrl = baseurl + "api/Profile/GetProfile";
+
+const headers = new Headers({
+  Authorization: `Bearer ${token}`,
+});
+
+const requestOptions = {
+  method: "GET",
+  headers: headers,
+};
+
+fetch(apiUrl + `?Username=${username}`, requestOptions)
+  .then((response) => {
+    if (response.ok) {
+      // Request was successful
+      console.log("Data posted successfully");
+      return response.json(); // Parse the response JSON
+      // You can handle the response data here if needed
+    } else {
+      // Request failed
+      console.error("Failed to post data");
+    }
+  })
+  .then((data) => {
+    // Update the <span> elements with the response data
+    document.getElementById('avatarname').textContent = data.name;
+    document.getElementById('avataremail').textContent = data.email;
+    document.getElementById("Avatarpicture").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+    document.getElementById("Avatarpicture2").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+    
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
