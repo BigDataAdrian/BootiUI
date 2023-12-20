@@ -149,7 +149,7 @@ $reply-base: #{$app-prefix}reply;
         flex-direction: row-reverse;
         flex-wrap: wrap;
         gap: .25rem;
-        width: 280px;
+        max-width: 280px;
         .tyn-video,.tyn-thumb{
             flex-grow: 1;
             width: 80px;

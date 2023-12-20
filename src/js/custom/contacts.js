@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     LoadColorTheme();
+    ColorTheme();
 });
 
 function parseJwt(token) {
@@ -247,3 +248,29 @@ fetch(apiUrl + `?Username=${username}`, requestOptions)
   .catch((error) => {
     console.error("Error:", error);
   });
+
+  function ColorTheme() {
+    const root = document.documentElement;
+    const colorInput = document.getElementById('Primary-Color');
+
+    // Load the previously selected color from local storage
+    const savedColor = localStorage.getItem('selectedColor');
+
+    // Set the input color to the last selected color or a default color
+    colorInput.value = savedColor || '#2563eb';
+
+    // Set the --bs-primary CSS variable to the selected color
+    root.style.setProperty('--bs-primary', colorInput.value);
+
+    // Add an input event listener to the color input
+    colorInput.addEventListener('input', function () {
+        // Get the selected color value from the input
+        const selectedColor = colorInput.value;
+
+        // Change the value of --bs-primary to the selected color
+        root.style.setProperty('--bs-primary', selectedColor);
+
+        // Save the selected color to local storage
+        localStorage.setItem('selectedColor', selectedColor);
+    });
+}
