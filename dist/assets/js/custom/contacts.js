@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+    LoadColorTheme();
+    ColorTheme();
 });
 
 function parseJwt(token) {
@@ -197,4 +199,78 @@ function LoadChat(Chatusername) {
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
         });
+}
+
+
+function LoadColorTheme(){
+    const savedColor = localStorage.getItem('selectedColor');
+    if (savedColor) {
+      const root = document.documentElement;
+      root.style.setProperty('--bs-primary', savedColor);
+    }
+}
+
+////Get profile
+const token = localStorage.getItem("token");
+const username = localStorage.getItem("username");
+const baseurl = localStorage.getItem("baseurl");
+const apiUrl = baseurl + "api/Profile/GetProfile";
+
+const headers = new Headers({
+  Authorization: `Bearer ${token}`,
+});
+
+const requestOptions = {
+  method: "GET",
+  headers: headers,
+};
+
+fetch(apiUrl + `?Username=${username}`, requestOptions)
+  .then((response) => {
+    if (response.ok) {
+      // Request was successful
+      console.log("Data posted successfully");
+      return response.json(); // Parse the response JSON
+      // You can handle the response data here if needed
+    } else {
+      // Request failed
+      console.error("Failed to post data");
+    }
+  })
+  .then((data) => {
+    // Update the <span> elements with the response data
+    document.getElementById('avatarname').textContent = data.name;
+    document.getElementById('avataremail').textContent = data.email;
+    document.getElementById("Avatarpicture").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+    document.getElementById("Avatarpicture2").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+    
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+
+  function ColorTheme() {
+    const root = document.documentElement;
+    const colorInput = document.getElementById('Primary-Color');
+
+    // Load the previously selected color from local storage
+    const savedColor = localStorage.getItem('selectedColor');
+
+    // Set the input color to the last selected color or a default color
+    colorInput.value = savedColor || '#2563eb';
+
+    // Set the --bs-primary CSS variable to the selected color
+    root.style.setProperty('--bs-primary', colorInput.value);
+
+    // Add an input event listener to the color input
+    colorInput.addEventListener('input', function () {
+        // Get the selected color value from the input
+        const selectedColor = colorInput.value;
+
+        // Change the value of --bs-primary to the selected color
+        root.style.setProperty('--bs-primary', selectedColor);
+
+        // Save the selected color to local storage
+        localStorage.setItem('selectedColor', selectedColor);
+    });
 }

@@ -12,7 +12,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     const Email = document.getElementById('username').value;
     const Password = document.getElementById('password').value;
     const apiUrl = baseurl + 'api/Authenticator/Login';
-    // Create the URL with query parameters
+    // Create the URL with query parameters 
     const url = new URL(apiUrl);
     url.searchParams.append('Email', Email);
     url.searchParams.append('Password', Password);
@@ -25,7 +25,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
                 });
             }
             return response.json(); // Assuming your API returns JSON
-           
+
         })
         .then((data) => {
             // Handle the response data
@@ -42,8 +42,8 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
             }
         })
         .catch((error) => {
-            
-            swal ("Error",""+ error , "error");
+
+            swal("Error", "" + error, "error");
         });
 });
 
@@ -86,18 +86,18 @@ function signIn(googleUser) {
             return response.json(); // Assuming your API returns JSON
         })
         .then(data => {
-             // Handle the response data
-             localStorage.setItem('token', data.token); // Store the token in localStorage
-             localStorage.setItem('username', data.username); // Store the username in localStorage
-             const redirectUrl = localStorage.getItem('redirectUrl');
-             if (redirectUrl) {
-                 // Clear the stored URL after using it
-                 localStorage.removeItem('redirectUrl');
-                 window.location.href = redirectUrl;
-             } else {
-                 // If no stored URL, redirect to a default page
-                 window.location.href = 'index.html';
-             }
+            // Handle the response data
+            localStorage.setItem('token', data.token); // Store the token in localStorage
+            localStorage.setItem('username', data.username); // Store the username in localStorage
+            const redirectUrl = localStorage.getItem('redirectUrl');
+            if (redirectUrl) {
+                // Clear the stored URL after using it
+                localStorage.removeItem('redirectUrl');
+                window.location.href = redirectUrl;
+            } else {
+                // If no stored URL, redirect to a default page
+                window.location.href = 'index.html';
+            }
         })
         .catch(error => {
             console.error('Error:', error);

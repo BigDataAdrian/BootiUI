@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     GetProfile();
     GetChats();
     processQueryString();
-
+    ColorTheme();
     function handleInput() {
         const inputValue = searchInput.value.trim();
         if (inputValue === '') {
@@ -425,11 +425,12 @@ function LoadChat(Chatusername) {
             let chatReply = document.querySelector('#tynReply');
             chatReply.innerHTML = "";
             data.history.forEach(message => {
+                var uuid = generateUUID();
                 if (message.origin == 1) {
                     let getInput = message.message;
                     let chatBubble = getInput;
                     let outgoingWraper = `
-                        <div class="tyn-reply-item outgoing">
+                        <div id="${uuid}" class="tyn-reply-item outgoing">
                           <div class="tyn-reply-group"></div>
                         </div>
                         `
@@ -467,7 +468,7 @@ function LoadChat(Chatusername) {
                     let inputEntry = '';
 
                     let incominggWraper = `
-                    <div class="tyn-reply-item incoming">
+                    <div id="${uuid}" class="tyn-reply-item incoming">
                         ${chatAvatar}
                     <div class="tyn-reply-group"></div>
                     </div>
@@ -543,6 +544,7 @@ function SendSelect(selectElement) {
 
 function message(text) {
 
+    var uuid = generateUUID();
     // Get the div with the id "tynChatInput"
     const chatInputDiv = document.getElementById("InputType");
 
@@ -574,7 +576,7 @@ function message(text) {
         </div>
         `;
     let outgoingWraper = `
-        <div class="tyn-reply-item outgoing">
+        <div id="${uuid}" class="tyn-reply-item outgoing">
           <div class="tyn-reply-group"></div>
         </div>
         `
@@ -594,14 +596,27 @@ function message(text) {
         getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
     }
 
-    let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
-    let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
-    simpleBody.getScrollElement().scrollTop = height;
+    const Scroll = document.getElementById(uuid);
+    Scroll.scrollIntoView({ behavior: "smooth" });
+
+    // let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
+    // let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
+    // simpleBody.getScrollElement().scrollTop = height;
 
     answer(getInput);
 }
 
+function generateUUID() {
+    // Generate a random UUID
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 function answer(text) {
+    showAndEnableTypingEffect();
     let chatReply = document.querySelector('#tynReply');
     let chatBody = document.querySelector('#tynChatBody');
     // Find the img element by its id
@@ -619,14 +634,29 @@ function answer(text) {
     `
     let chatBubble = '';
     let inputEntry = '';
+    let LastId = '';
     //post
     // Define the data you want to send as the request body
     const requestData = {
         Message: text,
         Username: username,
-        Chatusername: chatusername
+        Chatusername: chatusername,
+        Parameters: []
     };
+    // Obtaining the query parameters from the current URL
+    const queryParams = new URLSearchParams(window.location.search);
 
+    // Iterating over the query parameters and populating the Parameters list
+    for (const [key, value] of queryParams.entries()) {
+        // Creating a Querys object for each parameter-value pair
+        const queryObject = {
+            Parameter: key,
+            Value: value
+        };
+
+        // Adding the queryObject to the Parameters list
+        requestData.Parameters.push(queryObject);
+    }
     // Make an HTTP POST request to the endpoint
     const baseurl = localStorage.getItem('baseurl');
     fetch(baseurl + 'api/Chats/Message', {
@@ -653,49 +683,58 @@ function answer(text) {
                 chatBubble += answer;
             });
             inputEntry = data.input;
+            LastId = data.scrollId;
         })
         .finally(() => {
-
-            let incominggWraper = `
-            <div class="tyn-reply-item incoming">
-                ${chatAvatar}
-            <div class="tyn-reply-group"></div>
-            </div>
-            `
-            if (!chatReply.querySelector('.tyn-reply-item').classList.contains('incoming')) {
-                chatReply.insertAdjacentHTML("afterbegin", incominggWraper);
-                chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
-            } else {
-                chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
-            }
-
-            let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
-            let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
-            simpleBody.getScrollElement().scrollTop = height;
-
+            hideAndDisableTypingEffect();
             // Get the element by its ID
             const divElement = document.getElementById("InputType");
             // Set the new HTML content using innerHTML
-            divElement.innerHTML = inputEntry;
-            var selectorInput = document.getElementById('SelectorInput');
+            divElement.classList.add('hide');
+            // After the transition duration, update the content and remove the class
+            setTimeout(() => {
+                divElement.innerHTML = inputEntry;
+                divElement.classList.remove('hide');
+                var selectorInput = document.getElementById('SelectorInput');
 
-            if (selectorInput) {
-                // If the element exists, update its style
-                var rangeInput = document.getElementById('Slider_size');
-                selectorInput.style.maxHeight = rangeInput.value + 'px';
-            }
-            // Find the input and textarea elements within the div
-            const inputElement = divElement.querySelector("input[type='text']");
-            const textareaElement = divElement.querySelector("textarea");
+                if (selectorInput) {
+                    // If the element exists, update its style
+                    var rangeInput = document.getElementById('Slider_size');
+                    selectorInput.style.maxHeight = rangeInput.value + 'px';
+                }
+                // Find the input and textarea elements within the div
+                const inputElement = divElement.querySelector("input[type='text']");
+                const textareaElement = divElement.querySelector("textarea");
 
-            // Check if the input element was found
-            if (inputElement) {
-                // Set focus to the input element
-                inputElement.focus();
-            } else if (textareaElement) {
-                // If there is no input, check if a textarea element exists and set focus to it
-                textareaElement.focus();
-            }
+                // Check if the input element was found
+                if (inputElement) {
+                    // Set focus to the input element
+                    inputElement.focus();
+                } else if (textareaElement) {
+                    // If there is no input, check if a textarea element exists and set focus to it
+                    textareaElement.focus();
+                }
+
+                var uuid = generateUUID();
+                let incominggWraper = `
+                <div id="${uuid}" class="tyn-reply-item incoming">
+                    ${chatAvatar}
+                <div class="tyn-reply-group"></div>
+                </div>
+                `
+                if (!chatReply.querySelector('.tyn-reply-item').classList.contains('incoming')) {
+                    chatReply.insertAdjacentHTML("afterbegin", incominggWraper);
+                    chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+                } else {
+                    chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
+                }
+                const Scroll = document.getElementById(LastId);
+                Scroll.scrollIntoView({ behavior: "smooth" });
+            }, 250);
+
+
+
+
         })
         .catch(error => {
             // Handle any errors that occurred during the fetch or processing
@@ -1062,4 +1101,54 @@ function SliderChange(value) {
             // Handle errors here
             console.error('Error:', error);
         });
+}
+
+function ColorTheme() {
+    const root = document.documentElement;
+    const colorInput = document.getElementById('Primary-Color');
+
+    // Load the previously selected color from local storage
+    const savedColor = localStorage.getItem('selectedColor');
+
+    // Set the input color to the last selected color or a default color
+    colorInput.value = savedColor || '#2563eb';
+
+    // Set the --bs-primary CSS variable to the selected color
+    root.style.setProperty('--bs-primary', colorInput.value);
+
+    // Add an input event listener to the color input
+    colorInput.addEventListener('input', function () {
+        // Get the selected color value from the input
+        const selectedColor = colorInput.value;
+
+        // Change the value of --bs-primary to the selected color
+        root.style.setProperty('--bs-primary', selectedColor);
+
+        // Save the selected color to local storage
+        localStorage.setItem('selectedColor', selectedColor);
+    });
+}
+
+function ScrollOnLoadMedia() {
+    const parentDiv = document.getElementById("tynReply");
+
+    // Get the last child element
+    const firstChildElement = parentDiv.firstElementChild;
+
+    // Read the id of the last child element
+    const firstChildId = firstChildElement.id;
+    const targetDiv = document.getElementById(firstChildId);
+
+    targetDiv.scrollIntoView({ behavior: "smooth" });
+}
+function showAndEnableTypingEffect() {
+    var processingElement = document.getElementById('Processing');
+    processingElement.classList.remove('hidden');
+    processingElement.classList.add('typing');
+}
+
+function hideAndDisableTypingEffect() {
+    var processingElement = document.getElementById('Processing');
+    processingElement.classList.remove('typing');
+    processingElement.classList.add('hidden');
 }
