@@ -61,7 +61,7 @@ function GetChats() {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const baseurl = localStorage.getItem('baseurl');
-    const apiUrl = baseurl + 'api/Contacts/LoadChats';
+    const apiUrl = baseurl + 'api/Contacts/LoadChats?Username='+username;
     const authToken = token;
 
     const data = {

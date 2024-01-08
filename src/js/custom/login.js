@@ -12,7 +12,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     const Email = document.getElementById('username').value;
     const Password = document.getElementById('password').value;
     const apiUrl = baseurl + 'api/Authenticator/Login';
-    // Create the URL with query parameters
+    // Create the URL with query parameters 
     const url = new URL(apiUrl);
     url.searchParams.append('Email', Email);
     url.searchParams.append('Password', Password);

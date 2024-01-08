@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
             method: 'GET',
             headers: headers,
         };
-
+        const username = localStorage.getItem('username');
         // Make a GET request to your .NET Core API endpoint
         const baseurl = localStorage.getItem('baseurl');
-        fetch(baseurl + `api/Contacts/GetChats?search=${inputValue}`, requestOptions)
+        fetch(baseurl + `api/Contacts/GetChats?search=${inputValue}&Username=${username}`, requestOptions)
             .then(response => response.json())
             .then((data) => {
                 const parentElement = document.getElementById("suggestions-container");
@@ -892,7 +892,7 @@ function LoadChatFromModal(chatusername) {
                 // Get the parent <ul> element by its ID
                 const parentElement = document.getElementById("Chats");
                 //preparate route
-                const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
+                const Picture = baseurl + "api/Files/GetChatProfilePicture?imageName=" + item.picture;
                 // Create the inner HTML structure
                 listItem.innerHTML = `
                     <div class="tyn-media-group">
@@ -956,9 +956,17 @@ function LoadChatFromQuery(chatusername) {
         .then(response => {
             if (response.ok) {
                 // HTTP status code 200 indicates success
-                return response.json();
+                if (response.status == 207) {
+                    return response.text().then((errorText) => {
+                        swal("Error", "" + errorText, "error");
+                    });
+                  
+                } else {
+                    return response.json();
+                }
             } else {
                 // Handle non-200 status codes (e.g., 500 for server error)
+
                 throw new Error('Request failed with status: ' + response.status);
             }
         })
@@ -982,7 +990,7 @@ function LoadChatFromQuery(chatusername) {
                 // Get the parent <ul> element by its ID
                 const parentElement = document.getElementById("Chats");
                 //preparate route
-                const Picture = "images/Chats/" + item.username + "/Profile/" + item.picture
+                const Picture = baseurl + "api/Files/GetChatProfilePicture?imageName=" + item.picture;
                 // Create the inner HTML structure
                 listItem.innerHTML = `
                     <div class="tyn-media-group">
