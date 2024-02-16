@@ -14,7 +14,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     const apiUrl = baseurl + 'api/Authenticator/Login';
     // Create the URL with query parameters 
     const url = new URL(apiUrl);
-    url.searchParams.append('Email', Email);
+    url.searchParams.append('Username', Email);
     url.searchParams.append('Password', Password);
     // Send the GET request
     fetch(url)

@@ -1,7 +1,7 @@
 // Define and call the function when the DOMContentLoaded event is fired
 document.addEventListener('DOMContentLoaded', function () {
-    localStorage.setItem('baseurl', 'https://booti.website/');
-    //localStorage.setItem('baseurl', 'https://localhost:7286/');
+    //localStorage.setItem('baseurl', 'https://booti.website/');
+    localStorage.setItem('baseurl', 'https://localhost:7286/');
     console.log(localStorage.getItem('baseurl'));
 });
 
@@ -14,7 +14,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
     const apiUrl = baseurl + 'api/Authenticator/Login';
     // Create the URL with query parameters 
     const url = new URL(apiUrl);
-    url.searchParams.append('Email', Email);
+    url.searchParams.append('Username', Email);
     url.searchParams.append('Password', Password);
     // Send the GET request
     fetch(url)

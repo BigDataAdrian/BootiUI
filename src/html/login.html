@@ -11,10 +11,9 @@
     <title>Login | Booti</title>
     <link rel="stylesheet" href="./assets/css/bundle.css?v131">
     <link rel="stylesheet" href="./assets/css/app.css?v131">
-    <script src="https://accounts.google.com/gsi/client" async></script>
     <meta property="og:title" content="Booti">
     <meta property="og:description" content="Tu asistente virtual">
-    <meta property="og:image" content="images/logo.png">
+    <meta property="og:image" content="images/logo.jpg">
     <meta property="og:url" content="https://booti.website">
     <meta name="og:site_name" content="Booti">
     <meta name="og:type" content="website">
@@ -43,22 +42,17 @@
                                     <div class="row g-3">
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="email-address">Direccion de
-                                                    correo</label>
+                                                <label class="form-label" for="username">Usuario</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" id="username"
-                                                        placeholder="tucorreo@ejemplo.com">
+                                                    <input type="text" class="form-control" id="username">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label d-flex" for="password">Contraseña <a
-                                                        href="forgot.html"
-                                                        class="link link-primary ms-auto">Olvidaste?</a></label>
+                                                <label class="form-label d-flex" for="password">Contraseña</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="password" class="form-control" id="password"
-                                                        placeholder="Contraseña">
+                                                    <input type="password" class="form-control" id="password">
                                                 </div>
                                             </div>
                                         </div>
@@ -69,28 +63,6 @@
                                 </form>
 
                             </div>
-                            <div class="p-4 border-top border-light">
-                                <h6 class="tyn-title-overline text-center pb-1">O entrar con</h6>
-                                <ul class="d-flex gap gap-3">
-                                    <li class="flex-grow-1">
-                                        <div id="g_id_onload"
-                                            data-client_id="645569247427-k0k7lg7dt7toghf8j4f6n373qq4076cg.apps.googleusercontent.com"
-                                            data-context="signin" data-ux_mode="popup"
-                                            data-callback="handleCredentialResponse" data-auto_prompt="false">
-                                        </div>
-
-                                        <div class="g_id_signin" data-type="standard" data-shape="rectangular"
-                                            data-theme="outline" data-text="signin" data-size="large"
-                                            data-logo_alignment="left">
-                                        </div>
-                                    </li>
-
-                                   
-                                </ul>
-                            </div>
-                        </div><!-- .card -->
-                        <div class="text-center mt-4">
-                            <p class="small">No tienes una cuenta? <a href="register.html">Registrar</a></p>
                         </div>
                     </div><!-- .col -->
                 </div><!-- .row -->
@@ -102,5 +74,4 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="./assets/js/custom/login.js"></script>
 </body>
-
 </html>
