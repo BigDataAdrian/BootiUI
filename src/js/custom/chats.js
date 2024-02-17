@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const username = localStorage.getItem('username');
         // Make a GET request to your .NET Core API endpoint
         const baseurl = localStorage.getItem('baseurl');
-        fetch(baseurl + `api/Contacts/GetChats?search=${inputValue}&Username=${username}`, requestOptions)
+        fetch(baseurl + `api/Chats/GetChats?search=${inputValue}&Username=${username}`, requestOptions)
             .then(response => response.json())
             .then((data) => {
                 const parentElement = document.getElementById("suggestions-container");
@@ -277,6 +277,15 @@ function GetChats() {
 
                 const Picture = baseurl + "api/Files/GetChatProfilePicture?imageName=" + item.picture;
                 // Create the inner HTML structure
+                var Certified = "";
+                if (item.certified == 1) {
+                    Certified = `<div class="indicator varified">
+                    <!-- check-circle-fill -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                    </svg>
+                    </div>`
+                }
                 listItem.innerHTML = `
                     <div class="tyn-media-group">
                         <div class="tyn-media tyn-size-lg">
@@ -285,12 +294,7 @@ function GetChats() {
                         <div class="tyn-media-col">
                             <div class="tyn-media-row">
                                 <h6 class="name">${item.title}</h6>
-                                <div class="indicator varified">
-                                    <!-- check-circle-fill -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                    </svg>
-                                </div>
+                                ${Certified}
                             </div>
                             <div class="tyn-media-row has-dot-sap">
                                 <p class="content">${item.description}</p>
@@ -387,9 +391,9 @@ function LoadChat(Chatusername) {
             // History
             let chatBody = document.querySelector('#tynChatBody');
             let chatReply = document.querySelector('#tynReply');
-           
+
             chatReply.innerHTML = "";
-            
+
             data.history.forEach(message => {
                 var uuid = generateUUID();
                 if (message.origin == 1) {
@@ -656,9 +660,9 @@ function answer(text) {
             divElement.classList.add('hide');
             // After the transition duration, update the content and remove the class
             setTimeout(() => {
-                  // Get the element by its ID
-            const chatHelper = document.getElementById('Helper');
-            chatHelper.innerHTML = helper;
+                // Get the element by its ID
+                const chatHelper = document.getElementById('Helper');
+                chatHelper.innerHTML = helper;
                 divElement.innerHTML = inputEntry;
                 divElement.classList.remove('hide');
                 // Find the input and textarea elements within the div
@@ -845,7 +849,7 @@ function LoadChatFromQuery(chatusername) {
                     return response.text().then((errorText) => {
                         swal("Error", "" + errorText, "error");
                     });
-                  
+
                 } else {
                     return response.json();
                 }
