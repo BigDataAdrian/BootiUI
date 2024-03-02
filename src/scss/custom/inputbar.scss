@@ -49,3 +49,13 @@
     /*  margin: 0 12px;*/
     width: 100%;
   }
+
+  .chat-helper {
+    background: var(--nav-btns-bg);
+    border-radius:.5rem;
+    padding: 10px;
+    color:var(--reply-text);
+    font-size: .833rem;
+    width: 100%;
+    margin-bottom: 10px;
+  }

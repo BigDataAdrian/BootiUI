@@ -534,14 +534,14 @@ function message(text) {
 
     let getInput = text;
     let chatBubble = `
-        <div class="tyn-reply-bubble">
+        <div id="${uuid}" class="tyn-reply-bubble">
             <div class="tyn-reply-text">
                 ${getInput}
             </div>
         </div>
         `;
     let outgoingWraper = `
-        <div id="${uuid}" class="tyn-reply-item outgoing">
+        <div  class="tyn-reply-item outgoing">
           <div class="tyn-reply-group"></div>
         </div>
         `
