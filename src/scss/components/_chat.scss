@@ -103,6 +103,7 @@ $reply-base: #{$app-prefix}reply;
         border-radius: inherit;
         color: var(--reply-text);
         background: var(--reply-bg);
+        overflow: auto;
         .outgoing &{
             color: var(--outgoing-message-text);
             background:  var(--outgoing-message-bg);
@@ -299,7 +300,7 @@ $reply-base: #{$app-prefix}reply;
             flex-grow: 1;
             overflow: auto;
             background-color: var(--form-input-bg);
-            margin-right: .5rem;
+            //margin-right: .5rem;
             padding: .5rem .875rem;
             font-size: .875rem;
             line-height: 1.5rem;

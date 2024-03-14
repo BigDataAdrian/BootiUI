@@ -1,7 +1,7 @@
 // Define and call the function when the DOMContentLoaded event is fired
 document.addEventListener('DOMContentLoaded', function () {
-    //localStorage.setItem('baseurl', 'https://booti.website/');
-    localStorage.setItem('baseurl', 'https://localhost:7286/');
+    //localStorage.setItem('baseurl', 'https://chat.booti.website/');
+   localStorage.setItem('baseurl', 'https://localhost:7286/');
     console.log(localStorage.getItem('baseurl'));
 });
 

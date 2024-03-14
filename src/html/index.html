@@ -14,9 +14,10 @@
     <meta property="og:title" content="Booti">
     <meta property="og:description" content="Tu asistente virtual">
     <meta property="og:image" content="images/name.png">
-    <meta property="og:url" content="https://booti.website">
+    <meta property="og:url" content="https://chat.booti.website">
     <meta name="og:site_name" content="Booti">
     <meta name="og:type" content="website">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 
 <body class="tyn-body">
@@ -134,17 +135,16 @@
                     </div>
                     <div class="tyn-aside-head-tools">
                         <ul class="link-group gap gx-3">
-                            <li class="dropdown">
+                            <!-- <li class="dropdown">
                                 <button class="link" data-bs-toggle="modal" data-bs-target="#newChat">
-                                    <!-- plus -->
+                               
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-plus" viewBox="0 0 16 16">
                                         <path
                                             d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                     </svg>
-                                    <span>Nuevo</span>
                                 </button>
-                            </li><!-- li -->
+                            </li> -->
 
                         </ul><!-- .link-group -->
                     </div><!-- .tyn-aside-head-tools -->
@@ -177,14 +177,16 @@
             <div class="tyn-main tyn-chat-content" id="tynMain">
                 <div class="tyn-chat-head">
                     <ul class="tyn-list-inline d-md-none ms-n1">
-                        <li><button class="btn btn-icon btn-md btn-pill btn-transparent js-toggle-main">
+                        <li>
+                            <button class="btn btn-icon btn-md btn-pill btn-transparent js-toggle-main">
                                 <!-- arrow-left -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-arrow-left" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd"
                                         d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
                                 </svg>
-                            </button></li>
+                            </button>
+                        </li>
                     </ul>
                     <div class="tyn-media-group">
                         <div class="tyn-media tyn-size-rg d-none d-sm-inline-flex">
@@ -264,12 +266,15 @@
                         </div>
                     </div>
                 </div><!-- .tyn-chat-head -->
+
                 <div class="tyn-chat-body js-scroll-to-end" id="tynChatBody">
                     <div class="tyn-reply" id="tynReply">
                         <!--  <div class="tyn-reply-separator">Aug 22, 2022, 3:05 PM</div> -->
                     </div><!-- .tyn-reply -->
                 </div><!-- .tyn-chat-body -->
+
                 <div class="tyn-chat-form" id="general">
+
                     <div id="base" class="chat-area-footer disabledbutton">
                         <div>
                             <button onclick="message('Hola')" type="button" style="cursor:pointer; margin-right: 8px"
@@ -278,6 +283,11 @@
                             </button>
 
                         </div>
+                        <!-- <div>
+                            <button id="openScannerBtn" type="button" style="cursor:pointer; margin-right: 8px" class="">
+                                <i style="cursor:pointer;" class="material-icons">qr_code_scanner</i>
+                            </button>
+                        </div> -->
                         <div id="InputType" class="content" style="width:100%;overflow-x: auto;">
                             <input class="tyn-chat-form-input" id="Message" type="text" />
                         </div>
@@ -288,7 +298,6 @@
                             </button>
 
                         </div>
-
                     </div>
                 </div><!-- .tyn-chat-form -->
                 <div class="tyn-chat-content-aside" id="tynChatAside" data-simplebar>
@@ -324,46 +333,19 @@
     <div id="zoomed-image" onclick="closeZoomedImage()">
         <img crossorigin="anonymous" id="zoomed-image-content">
     </div>
-    <div class="modal fade" tabindex="-1" id="newChat">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0" style="text-align: center;">
-                <div class="modal-body p-4">
-                    <img src="images/logo.png" alt="" style="width: 100px;border-radius: 5px;">
-                    <h4 class="pb-2">Buscar por nombre</h4>
-                    <div class="form-group">
-                        <div class="form-control-wrap">
-                            <div class="form-control-icon start">
-                                <!-- search -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-search" viewBox="0 0 16 16">
-                                    <path
-                                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                                </svg>
-                            </div>
-                            <input type="text" class="form-control form-control-solid" id="search-contact"
-                                placeholder="Buscar bot">
-                        </div>
-                    </div>
-                    <ul class="tyn-media-list gap gap-3 pt-4" id="suggestions-container">
-                    </ul><!-- .tyn-media-list -->
-                </div><!-- .modal-body -->
-                <button class="btn btn-md btn-icon btn-pill btn-white shadow position-absolute top-0 end-0 mt-n3 me-n3"
-                    data-bs-dismiss="modal">
-                    <!-- x-lg -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-x-lg" viewBox="0 0 16 16">
-                        <path
-                            d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-                    </svg>
-                </button>
-            </div><!-- .modal-content -->
-        </div><!-- .modal-dialog -->
-    </div><!-- .modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="reader"></div>
+        </div>
+    </div>
+
     <script src="./assets/js/bundle.js?v131"></script>
     <script src="./assets/js/app.js?v131"></script>
     <script src="./assets/js/custom/authenticator.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="./assets/js/custom/chats.js"></script>
+    <script src="./assets/js/custom/scanner.js"></script>
 </body>
 
 </html>
