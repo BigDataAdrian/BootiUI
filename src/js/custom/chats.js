@@ -10,7 +10,7 @@ document.getElementById('InputType').addEventListener('keypress', function (e) {
         // Check if the target of the event is an input element with a specific class or other identifying criteria
         if (e.target.tagName === 'INPUT' && e.target.classList.contains('tyn-chat-form-input')) {
             // Call your message handling function with the message
-            message(e.target.value);
+            message(e.target.value,e.target.value);
         }
     }
 });
@@ -88,7 +88,7 @@ document.addEventListener('change', function (event) {
                 let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
                 simpleBody.getScrollElement().scrollTop = height;
 
-                answer("");
+                answer("","");
             }
         };
         xhr.onerror = function () {
@@ -421,24 +421,24 @@ function sendinput() {
     if (inputElement.tagName.toLowerCase() === 'textarea') {
         // It's a textarea, get the value
         var inputValue = inputElement.value;
-        message(inputValue);
+        message(inputValue,inputValue);
     } else if (inputElement.tagName.toLowerCase() === 'input') {
         // It's an input, get the value
         var inputValue = inputElement.value;
 
-        message(inputValue);
+        message(inputValue,inputValue);
     }
 }
 
 function SendSelect(selectElement) {
     // Get the selected option value
     var selectedValue = selectElement.options[selectElement.selectedIndex].value;
-
+    var selectedText = selectElement.options[selectElement.selectedIndex].text;
     // Do something with the selected value (e.g., log it)
-    message(selectedValue);
+    message(selectedValue,selectedText);
 }
 
-function message(text) {
+function message(value, text) {
 
     var uuid = generateUUID();
     // Get the div with the id "tynChatInput"
@@ -499,7 +499,7 @@ function message(text) {
     // let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
     // simpleBody.getScrollElement().scrollTop = height;
 
-    answer(getInput);
+    answer(value, getInput);
 }
 
 function generateUUID() {
@@ -511,7 +511,7 @@ function generateUUID() {
     });
 }
 
-function answer(text) {
+function answer(value,text) {
     showAndEnableTypingEffect();
     let chatReply = document.querySelector('#tynReply');
     let chatBody = document.querySelector('#tynChatBody');
@@ -535,6 +535,7 @@ function answer(text) {
     //post
     // Define the data you want to send as the request body
     const requestData = {
+        Value: value,
         Message: text,
         Username: username,
         Chatusername: chatusername,

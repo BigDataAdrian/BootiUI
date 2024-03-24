@@ -24,9 +24,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
         html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
           closeModal();
-          message(decodedText);
+          console.log(decodedResult);
+          console.log(decodedText);
+          message(decodedText,decodedText);
         };
-        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        const config = { fps: 30, qrbox: undefined , aspectRatio: 1.333334};
         html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
         .catch(error => console.error(error));
       }
