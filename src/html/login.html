@@ -17,6 +17,7 @@
     <meta property="og:url" content="https://booti.website">
     <meta name="og:site_name" content="Booti">
     <meta name="og:type" content="website">
+    <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 
 <body class="tyn-body">
@@ -33,18 +34,19 @@
                         <div class="card border-0" style="border-radius: 25px;">
                             <div class="p-4">
                                 <div style="text-align: center;">
-                                    <img style="width: 100px;border-radius: 5px;" src="images/name.png">
+                                    <img style="width: 100px;border-radius: 5px;box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);" src="images/name.png">
                                 </div>
-                               
+
                                 <h3>Login</h3>
                                 <form id="login-form">
-                                   
+
                                     <div class="row g-3">
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label class="form-label" for="username">Usuario</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" id="username">
+                                                    <input type="text" autocomplete="off" class="form-control"
+                                                        id="username">
                                                 </div>
                                             </div>
                                         </div>
@@ -52,12 +54,25 @@
                                             <div class="form-group">
                                                 <label class="form-label d-flex" for="password">Contraseña</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="password" class="form-control" id="password">
+                                                    <input type="password" autocomplete="off" class="form-control"
+                                                        id="password">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-10">
                                             <button class="btn btn-primary w-100" type="submit">Entrar</button>
+                                        </div>
+                                        <div class="col-2">
+                                            <div id="g_id_onload"
+                                                data-client_id="645569247427-k0k7lg7dt7toghf8j4f6n373qq4076cg.apps.googleusercontent.com"
+                                                data-context="signin" data-ux_mode="popup"
+                                                data-callback="handleCredentialResponse" data-auto_prompt="false">
+                                            </div>
+
+
+                                            <div class="g_id_signin" data-type="icon" data-shape="square"
+                                                data-theme="outline" data-text="signin" data-size="large">
+                                            </div>
                                         </div>
                                     </div><!-- .row -->
                                 </form>
@@ -74,4 +89,5 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="./assets/js/custom/login.js"></script>
 </body>
+
 </html>

@@ -8,19 +8,42 @@ document.getElementById('InputType').addEventListener('keypress', function (e) {
     // Check if the pressed key is Enter (keycode 13)
     if (e.keyCode === 13) {
         // Check if the target of the event is an input element with a specific class or other identifying criteria
-        if (e.target.tagName === 'INPUT' && e.target.classList.contains('tyn-chat-form-input')) {
-            // Call your message handling function with the message
-            message(e.target.value,e.target.value);
+        if (e.target.tagName.toLowerCase() === 'input' && e.target.classList.contains('tyn-chat-form-input')) {
+            var inputValue = e.target.value;
+            var inputtext = e.target.value;
+            if (e.target.type.toLowerCase() == "password") {
+                inputtext = "************"
+            }
+            message(inputValue, inputtext);
+        }
+        else if (e.target.tagName.toLowerCase() === 'textarea') {
+            // Check if shift key is also pressed along with Enter
+            if (e.shiftKey) {
+                var inputValue = e.target.value;
+                var inputtext = e.target.value;
+                message(inputValue, inputtext);
+                e.preventDefault();
+            }
         }
     }
 });
-
+function printScrollPosition() {
+    var container = document.getElementById("tynChatBody");
+    var scrollPosition = container.scrollTop;
+    if (scrollPosition === 0) {
+        History();
+    }
+}
 // Function to read the query string parameter and call another function
 function processQueryString() {
     // Function to get the value of a parameter from the query string
     function getQueryStringParameter(parameter) {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(parameter);
+        // Check for parameter in lowercase and uppercase
+        const lowerCaseParam = urlParams.get(parameter.toLowerCase());
+        const upperCaseParam = urlParams.get(parameter.toUpperCase());
+        // Return the parameter value if found, otherwise return null
+        return lowerCaseParam || upperCaseParam;
     }
     // Get the 'Booti' value from the query string
     const queryStringParam = getQueryStringParameter('Chat');
@@ -29,7 +52,7 @@ function processQueryString() {
     if (queryStringParam !== null) {
         LoadChatFromQuery(queryStringParam)
     } else {
-        console.log("Query parameter 'Booti' not found.");
+        console.log("Query parameters not found.");
         // Handle the case where the parameter is not present
     }
 }
@@ -37,6 +60,7 @@ function processQueryString() {
 document.addEventListener('change', function (event) {
     var target = event.target;
     if (target.classList.contains('file-upload')) {
+        showAndEnableTypingEffect();
         var files = target.files;
         var formData = new FormData();
 
@@ -67,7 +91,8 @@ document.addEventListener('change', function (event) {
                 <div class="tyn-reply-item outgoing">
                 <div class="tyn-reply-group"></div>
                 </div>
-                `
+                `;
+                let oldHeight = chatBody.scrollHeight;
                 // Find the first element with the specified class
                 var itemList = document.querySelector(".tyn-reply-item");
                 // Check if the element exists
@@ -84,11 +109,15 @@ document.addEventListener('change', function (event) {
                     responseData !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
                 }
 
-                let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
-                let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
-                simpleBody.getScrollElement().scrollTop = height;
+                let newHeight = chatReply.scrollHeight;
 
-                answer("","");
+                // Calculate height of newly inserted content
+                let insertedHeight = newHeight - oldHeight;
+
+                // Adjust scroll position to maintain relative position
+                chatBody.scrollTop += insertedHeight;
+                hideAndDisableTypingEffect();
+                answer("", "");
             }
         };
         xhr.onerror = function () {
@@ -138,8 +167,6 @@ function GetProfile() {
     fetch(apiUrl + `?Username=${username}`, requestOptions)
         .then(response => {
             if (response.ok) {
-                // Request was successful
-                console.log("Data posted successfully");
                 return response.json(); // Parse the response JSON
                 // You can handle the response data here if needed
             } else {
@@ -149,7 +176,7 @@ function GetProfile() {
         })
         .then(data => {
             // Update the <span> elements with the response data
-            document.getElementById("Email").textContent = data.email;
+            document.getElementById("Email").textContent = data.username;
             document.getElementById("Name").textContent = data.name;
             document.getElementById("Profilepicturemodal").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
         })
@@ -184,7 +211,6 @@ function GetChats() {
         .then(response => {
             if (response.ok) {
                 // Request was successful
-                console.log("Data posted successfully");
                 return response.json(); // Parse the response JSON
                 // You can handle the response data here if needed
             } else {
@@ -323,8 +349,30 @@ function LoadChat(Chatusername) {
             let chatBody = document.querySelector('#tynChatBody');
             let chatReply = document.querySelector('#tynReply');
 
+            const divElement = document.getElementById("InputType");
+            const chatHelper = document.getElementById('Helper');
+            const hint = document.getElementById('Hint')
+            var SendButton = document.getElementById("SendButton");
+            if (data.send) {
+                SendButton.style.display = "block";
+            } else {
+                SendButton.style.display = "none";
+            }
+            // Set the new HTML content using innerHTML
+            divElement.innerHTML = data.input;
+            chatHelper.innerHTML = data.helper;
+            hint.innerHTML = data.hint;
+            var chatSearchDiv = document.getElementById('tynChatSearch');
+            if (data.hint !== "" && data.hint !== null) {
+                hint.innerHTML = data.hint;
+                chatSearchDiv.classList.add('active');
+            } else {
+                chatSearchDiv.classList.remove('active');
+            }
+            
             chatReply.innerHTML = "";
-
+            localStorage.setItem('last', data.last);
+            let oldHeight = chatBody.scrollHeight;
             data.history.forEach(message => {
                 var uuid = generateUUID();
                 if (message.origin == 1) {
@@ -350,17 +398,13 @@ function LoadChat(Chatusername) {
                         getInput !== "" && chatReply.insertAdjacentHTML("afterbegin", outgoingWraper);
                         getInput !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
                     }
-
-                    let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
-                    let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
-                    simpleBody.getScrollElement().scrollTop = height;
                 }
 
                 if (message.origin == 2) {
                     let text = message.message;
                     var srcValue = imgElement.getAttribute("src");
                     let chatAvatar = `<div class="tyn-reply-avatar">
-                        <div class="tyn-media tyn-size-md tyn-circle">
+                        <div class="tyn-media tyn-circle">
                             <img src="${srcValue}" alt="">
                         </div>
                     </div>
@@ -389,19 +433,17 @@ function LoadChat(Chatusername) {
                         text !== "" && chatReply.insertAdjacentHTML("afterbegin", incominggWraper);
                         text !== "" && chatReply.querySelector('.tyn-reply-item .tyn-reply-group').insertAdjacentHTML("beforeend", chatBubble);
                     }
-
-                    let simpleBody = SimpleBar.instances.get(document.querySelector('#tynChatBody'));
-                    let height = chatBody.querySelector('.simplebar-content > *').scrollHeight;
-                    simpleBody.getScrollElement().scrollTop = height;
                 }
             });
+            let newHeight = chatReply.scrollHeight;
 
+            // Calculate height of newly inserted content
+            let insertedHeight = newHeight - oldHeight;
+
+            // Adjust scroll position to maintain relative position
+            chatBody.scrollTop += insertedHeight;
             // Get the element by its ID
-            const divElement = document.getElementById("InputType");
-            const chatHelper = document.getElementById('Helper');
-            // Set the new HTML content using innerHTML
-            divElement.innerHTML = data.input;
-            chatHelper.innerHTML = data.helper;
+
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -421,12 +463,15 @@ function sendinput() {
     if (inputElement.tagName.toLowerCase() === 'textarea') {
         // It's a textarea, get the value
         var inputValue = inputElement.value;
-        message(inputValue,inputValue);
+        message(inputValue, inputValue);
     } else if (inputElement.tagName.toLowerCase() === 'input') {
         // It's an input, get the value
         var inputValue = inputElement.value;
-
-        message(inputValue,inputValue);
+        var inputtext = inputElement.value;
+        if (inputElement.type.toLowerCase() == "password") {
+            inputtext = "************"
+        }
+        message(inputValue, inputtext);
     }
 }
 
@@ -435,11 +480,18 @@ function SendSelect(selectElement) {
     var selectedValue = selectElement.options[selectElement.selectedIndex].value;
     var selectedText = selectElement.options[selectElement.selectedIndex].text;
     // Do something with the selected value (e.g., log it)
-    message(selectedValue,selectedText);
+    message(selectedValue, selectedText);
 }
-
+let isExecuting = false;
 function message(value, text) {
 
+    if (isExecuting) {
+        console.log("Function is already running. Please wait.");
+        return;
+    }
+
+    // Set the flag to true to indicate that the function is executing
+    isExecuting = true;
     var uuid = generateUUID();
     // Get the div with the id "tynChatInput"
     const chatInputDiv = document.getElementById("InputType");
@@ -511,7 +563,7 @@ function generateUUID() {
     });
 }
 
-function answer(value,text) {
+function answer(value, text) {
     showAndEnableTypingEffect();
     let chatReply = document.querySelector('#tynReply');
     let chatBody = document.querySelector('#tynChatBody');
@@ -523,15 +575,17 @@ function answer(value,text) {
     const chatusername = localStorage.getItem('chatusername');
 
     let chatAvatar = `<div class="tyn-reply-avatar">
-        <div class="tyn-media tyn-size-md tyn-circle">
+        <div class="tyn-media tyn-circle">
             <img src="${srcValue}" alt="">
         </div>
     </div>
     `
     let chatBubble = '';
     let inputEntry = '';
+    let hint = '';
     let helper = '';
     let LastId = '';
+    let Send = false;
     //post
     // Define the data you want to send as the request body
     const requestData = {
@@ -583,6 +637,8 @@ function answer(value,text) {
             inputEntry = data.input;
             helper = data.helper;
             LastId = data.scrollId;
+            Send = data.send;
+            hint = data.hint;
         })
         .finally(() => {
             hideAndDisableTypingEffect();
@@ -596,11 +652,26 @@ function answer(value,text) {
                 const chatHelper = document.getElementById('Helper');
                 chatHelper.innerHTML = helper;
                 divElement.innerHTML = inputEntry;
+                const divhint = document.getElementById('Hint')
+                divhint.innerHTML = hint;
+                var chatSearchDiv = document.getElementById('tynChatSearch');
+                if (hint !== "" && hint !== null) {
+                    chatSearchDiv.classList.add('active');
+                } else {
+                    chatSearchDiv.classList.remove('active');
+                }
+
                 divElement.classList.remove('hide');
                 // Find the input and textarea elements within the div
-                const inputElement = divElement.querySelector("input[type='text']");
+                const inputElement = divElement.querySelector("input");
                 const textareaElement = divElement.querySelector("textarea");
 
+                var SendButton = document.getElementById("SendButton");
+                if (Send) {
+                    SendButton.style.display = "block";
+                } else {
+                    SendButton.style.display = "none";
+                }
                 // Check if the input element was found
                 if (inputElement) {
                     // Set focus to the input element
@@ -625,8 +696,17 @@ function answer(value,text) {
                 }
                 const Scroll = document.getElementById(LastId);
                 Scroll.scrollIntoView({ behavior: "smooth" });
+                isExecuting = false;
             }, 250);
-
+            const currentDivCount = chatReply.children.length;
+        
+            // If the total count exceeds the maximum, remove the oldest divs
+            if (currentDivCount > 40) {
+                const removeCount = currentDivCount - 40;
+                for (let i = 0; i < removeCount; i++) {
+                    chatReply.removeChild(chatReply.lastElementChild);
+                }
+            }
 
 
 
@@ -805,4 +885,101 @@ function hideAndDisableTypingEffect() {
     var processingElement = document.getElementById('Processing');
     processingElement.classList.remove('typing');
     processingElement.classList.add('hidden');
+}
+
+function History() {
+    showAndEnableTypingEffect();
+    const last = localStorage.getItem('last');
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    const chatusername = localStorage.getItem('chatusername');
+    // Define the data you want to send as the request body
+    const requestData = {
+        Last: last,
+        Username: username,
+        Chatusername: chatusername
+    };
+    // Make an HTTP POST request to the endpoint
+    const baseurl = localStorage.getItem('baseurl');
+    fetch(baseurl + 'api/Chats/GetHistory', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token, // If you have authorization in place
+        },
+        body: JSON.stringify(requestData)
+    })
+        .then(response => {
+            if (response.ok) {
+                // HTTP status code 200 indicates success
+                return response.json();
+            } else {
+                // Handle non-200 status codes (e.g., 500 for server error)
+                throw new Error('Request failed with status: ' + response.status);
+            }
+        })
+        .then(data => {
+            hideAndDisableTypingEffect();
+            // History
+            var imgElement = document.getElementById("Chatpictureinlineheader");
+            let chatReply = document.querySelector('#tynReply');
+            let chatBody = document.querySelector('#tynChatBody');
+            localStorage.setItem('last', data.last);
+            // Get current height of the chat body
+            let oldHeight = chatBody.scrollHeight;
+
+            data.listMessages.forEach(message => {
+                var uuid = generateUUID();
+                if (message.origin == 1) {
+                    let getInput = message.message;
+                    let chatBubble = getInput;
+                    let outgoingWrapper = `
+                        <div id="${uuid}" class="tyn-reply-item outgoing">
+                            <div class="tyn-reply-group">
+                            ${chatBubble}
+                            </div>
+                        </div>
+                    `;
+                    // Append new message at the end of the chat body
+                    chatReply.insertAdjacentHTML("beforeend", outgoingWrapper);
+                }
+
+                if (message.origin == 2) {
+                    let text = message.message;
+                    let srcValue = imgElement.getAttribute("src");
+                    let chatAvatar = `<div class="tyn-reply-avatar">
+                        <div class="tyn-media tyn-circle">
+                            <img src="${srcValue}" alt="">
+                        </div>
+                    </div>`;
+
+                    let incomingWrapper = `
+                        <div id="${uuid}" class="tyn-reply-item incoming">
+                        ${chatAvatar}
+                        <div class="tyn-reply-group">
+                        ${text}
+                        </div>
+                       
+                        </div>`;
+                    chatReply.insertAdjacentHTML("beforeend", incomingWrapper);
+                }
+            });
+            // Get current height of the chat body
+
+            // Calculate new height of the chat body
+            let newHeight = chatBody.scrollHeight;
+
+            // Calculate height of newly inserted content
+            let insertedHeight = newHeight - oldHeight;
+
+            // Adjust scroll position to maintain relative position
+            chatBody.scrollTop = insertedHeight;
+        })
+        .finally(() => {
+
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the fetch or processing
+            console.error('Error:', error);
+        });
 }

@@ -99,3 +99,20 @@ disabled-div {
     max-height: 400px;
     margin: auto;
   }
+
+/* Style the scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px; /* Adjust the width of the scrollbar */
+    height: 8px;
+  }
+  
+  /* Track */
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent; /* Make the scrollbar track transparent */
+  }
+  
+  /* Handle */
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--bs-primary);/* Make the scrollbar handle transparent by default */
+    border-radius: 10px; /* Make scrollbar handle rounded */
+  }

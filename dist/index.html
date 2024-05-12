@@ -52,7 +52,7 @@
                                         </div>
                                         <div class="tyn-media-col">
                                             <div class="tyn-media-row">
-                                                <h6 class="name"><span id="Name"></span></h6>
+                                                <h6 class="name"><span id="Email"></span></h6>
                                                 <div class="indicator varified">
                                                     <!-- check-circle-fill -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -64,7 +64,7 @@
                                                 </div>
                                             </div>
                                             <div class="tyn-media-row has-dot-sap">
-                                                <p class="content"><span id="Email"></span></p>
+                                                <p class="content"><span id="Name"></span></p>
                                             </div>
                                         </div>
                                     </div>
@@ -148,7 +148,7 @@
                         </ul><!-- .link-group -->
                     </div><!-- .tyn-aside-head-tools -->
                 </div><!-- .tyn-aside-head -->
-                <div class="tyn-aside-body" data-simplebar>
+                <div class="tyn-aside-body custom-scrollbar">
                     <div class="tyn-aside-search">
                         <div class="form-group tyn-pill">
                             <div class="form-control-wrap">
@@ -196,7 +196,7 @@
                         </div>
                         <div class="tyn-media-col">
                             <div class="tyn-media-row">
-                                <h6 class="name"><span id="Chatheader" class="d-none d-sm-inline-block"></span></h6>
+                                <h6 class="name"><span id="Chatheader" class="d-sm-inline-block"></span></h6>
                             </div>
                             <div class="tyn-media-row has-dot-sap">
                                 <span id="Chatusernameheader" class="meta"></span>
@@ -205,7 +205,8 @@
                         </div>
                     </div>
                     <ul class="tyn-list-inline gap gap-3 ms-auto">
-                        <li><button class="btn btn-icon btn-light js-toggle-chat-options">
+                        <li>
+                            <button class="btn btn-icon btn-light js-toggle-chat-options">
                                 <!-- layout-sidebar-inset-reverse -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-layout-sidebar-inset-reverse" viewBox="0 0 16 16">
@@ -213,60 +214,19 @@
                                         d="M2 2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h12z" />
                                     <path d="M13 4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V4z" />
                                 </svg>
-                            </button></li>
+                            </button>
+                        </li>
+                       
                     </ul>
                     <div class="tyn-chat-search" id="tynChatSearch">
-                        <div class="flex-grow-1">
-                            <div class="form-group">
-                                <div class="form-control-wrap form-control-plaintext-wrap">
-                                    <div class="form-control-icon start">
-                                        <!-- search -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                            <path
-                                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                                        </svg>
-                                    </div>
-                                    <input type="text" class="form-control form-control-plaintext" id="searchInThisChat"
-                                        placeholder="Search in this chat">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap gap-3">
-                            <ul class="tyn-list-inline ">
-                                <li><button class="btn btn-icon btn-sm btn-transparent">
-                                        <!-- chevron-up -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd"
-                                                d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-                                        </svg>
-                                    </button></li>
-                                <li><button class="btn btn-icon btn-sm btn-transparent">
-                                        <!-- chevron-down -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd"
-                                                d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                        </svg>
-                                    </button></li>
-                            </ul>
-                            <ul class="tyn-list-inline ">
-                                <li><button class="btn btn-icon btn-md btn-light js-toggle-chat-search">
-                                        <!-- x-lg -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                                            <path
-                                                d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-                                        </svg>
-                                    </button>
-                                </li>
-                            </ul>
+                        <i class="material-icons" style="padding-right: 10px;">lightbulb</i>
+                        <div id="Hint">
+                           
                         </div>
                     </div>
                 </div><!-- .tyn-chat-head -->
 
-                <div class="tyn-chat-body js-scroll-to-end" id="tynChatBody">
+                <div class="tyn-chat-body custom-scrollbar" id="tynChatBody" onscroll="printScrollPosition()">
                     <div class="tyn-reply" id="tynReply">
                         <!--  <div class="tyn-reply-separator">Aug 22, 2022, 3:05 PM</div> -->
                     </div><!-- .tyn-reply -->
@@ -276,7 +236,7 @@
 
                     <div id="base" class="chat-area-footer disabledbutton">
                         <div>
-                            <button onclick="message('Hola','Hola 👋')" type="button" style="cursor:pointer; margin-right: 8px"
+                            <button onclick="message('👋','👋')" type="button" style="cursor:pointer; margin-right: 8px"
                                 class="detail-button">
                                 <i style="cursor:pointer;" class="material-icons">waving_hand</i>
                             </button>
@@ -287,10 +247,11 @@
                                 <i style="cursor:pointer;" class="material-icons">qr_code_scanner</i>
                             </button>
                         </div> -->
-                        <div id="InputType" class="content" style="width:100%;overflow-x: auto;">
+                        <div id="InputType" class="content"
+                            style="width:100%;overflow-x: auto;">
                             <input class="tyn-chat-form-input" id="Message" type="text" />
                         </div>
-                        <div>
+                        <div id="SendButton">
                             <button onclick="sendinput()" type="button" style="cursor:pointer; width: 100%;"
                                 class="detail-button">
                                 <i style="cursor:pointer;" class="material-icons">send</i>
@@ -319,7 +280,7 @@
                     <div class="tyn-aside-row">
                         <ul class="nav nav-btns nav-btns-stretch nav-btns-light">
                             <li class="nav-item">
-                                <div id="Helper">
+                                <div class="custom-scrollbar" id="Helper">
 
                                 </div>
                             </li>
@@ -338,7 +299,6 @@
             <div id="reader"></div>
         </div>
     </div>
-
     <script src="./assets/js/bundle.js?v131"></script>
     <script src="./assets/js/app.js?v131"></script>
     <script src="./assets/js/custom/authenticator.js"></script>
@@ -346,6 +306,7 @@
     <script src="./assets/js/custom/chats.js"></script>
     <script src="./assets/js/custom/scanner.js"></script>
     <script src="./assets/js/custom/html5-qrcode.min.js"></script>
+
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 // Define and call the function when the DOMContentLoaded event is fired
 document.addEventListener('DOMContentLoaded', function () {
-   // localStorage.setItem('baseurl', 'https://chat.booti.website/');
-  localStorage.setItem('baseurl', 'https://localhost:7286/');
+    localStorage.setItem('baseurl', 'https://chat.booti.website/');
+    //localStorage.setItem('baseurl', 'https://localhost:7286/');
     console.log(localStorage.getItem('baseurl'));
 });
 
@@ -65,7 +65,7 @@ function parseJwt(token) {
     return JSON.parse(jsonPayload);
 }
 // Callback function for successful sign-in
-function signIn(googleUser) {
+function signIn(googleUser){
     const baseurl = localStorage.getItem('baseurl');
     // API endpoint URL
     const apiUrl = baseurl + 'api/Authenticator/Google';
@@ -81,7 +81,8 @@ function signIn(googleUser) {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+            // throw new Error(`HTTP error! Status: ${response.status}`);
+               swal("Error", "Credenciales invalidas o usuario sin acceso", "error");
             }
             return response.json(); // Assuming your API returns JSON
         })

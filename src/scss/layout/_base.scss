@@ -80,7 +80,7 @@
 
 @include media-breakpoint-up(md){
     .#{$app-prefix}root{
-        --appbar-height: 73px;
+        --appbar-height: 50px;
     }
     .#{$app-prefix}content{
         &.has-aside-base,&.has-aside-sticky{

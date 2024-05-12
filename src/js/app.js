@@ -39,16 +39,16 @@
           })
         }
       },
-      scroll: function () {
-        let elm = document.querySelectorAll('.js-scroll-to-end');
-        if (elm) {
-          elm.forEach(item => {
-            let simpleBody = new SimpleBar(item);
-            let height = item.querySelector('.simplebar-content > *').scrollHeight
-            simpleBody.getScrollElement().scrollTop = height;
-          })
-        }
-      },
+      // scroll: function () {
+      //   let elm = document.querySelectorAll('.js-scroll-to-end');
+      //   if (elm) {
+      //     elm.forEach(item => {
+      //       let simpleBody = new SimpleBar(item);
+      //       let height = item.querySelector('.simplebar-content > *').scrollHeight
+      //       simpleBody.getScrollElement().scrollTop = height;
+      //     })
+      //   }
+      // },
       input: function () {
         let chatInput = document.querySelector('#tynChatInput');
         if (chatInput) {
@@ -310,7 +310,7 @@
 
   TynApp.Custom.init = function () {
     TynApp.Chat.reply.search();
-    TynApp.Chat.reply.scroll();
+    //TynApp.Chat.reply.scroll();
     TynApp.Chat.reply.input();
     TynApp.Chat.reply.quick();
     TynApp.Chat.reply.send();

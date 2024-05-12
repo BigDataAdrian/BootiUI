@@ -31,8 +31,12 @@
         background: var(--aside-bg);
     }
     &-item{
-        padding: var(--aside-item-gap-y) var(--aside-gap-x);
+        //padding: var(--aside-item-gap-y) var(--aside-gap-x);
         cursor: pointer;
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 10px;
+        margin: 8px;
         &:hover,&.active{
             background: var(--aside-item-active-bg);
         }

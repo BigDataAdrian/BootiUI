@@ -9,5 +9,7 @@
     .#{$app-prefix}size-#{$name}{
         --#{$app-prefix}size: var(--#{$prefix}size-#{$name});
         --#{$app-prefix}icon-size: var(--#{$prefix}icon-size-#{$name});
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 2px;
     }
 }
