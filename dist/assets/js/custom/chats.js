@@ -178,7 +178,12 @@ function GetProfile() {
             // Update the <span> elements with the response data
             document.getElementById("Email").textContent = data.username;
             document.getElementById("Name").textContent = data.name;
-            document.getElementById("Profilepicturemodal").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+            if (data.picture ==null){
+                document.getElementById("Profilepicturemodal").src = "images/robot.png";
+            }else{
+                document.getElementById("Profilepicturemodal").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
+            }
+          
         })
         .catch(error => {
             console.error("Error:", error);

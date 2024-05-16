@@ -43,7 +43,7 @@ $appbar-nav-gap-x:                    $body-gap-x;
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
     + .#{$app-prefix}content{
-        margin-top: var(--appbar-height);
+        margin-top: var(--appbar-height);//
     }
     &-wrap{
         display: flex;
@@ -52,7 +52,7 @@ $appbar-nav-gap-x:                    $body-gap-x;
     &-logo{
         display: inline-flex;
         border-right: 1px solid var(--border-color);
-        padding: .3rem var(--#{$prefix}body-gap-x);
+        padding: .3rem .5rem;
     }
     &-nav{
         display: flex;

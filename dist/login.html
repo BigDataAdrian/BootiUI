@@ -21,9 +21,10 @@
 </head>
 
 <body class="tyn-body">
-    <div class="tyn-root">
+    <div class="tyn-root" style="background-image: url('images/wallpapers/wallpaper04.jpg'); background-position: center; background-size: cover; ">
         <div class="tyn-content tyn-auth tyn-auth-centered">
             <div class="container">
+
                 <div class="row justify-content-center">
                     <div class="col-xl-4 col-lg-5 col-md-7 col-sm-9">
                         <!-- <div class="my-3 text-center">
@@ -34,7 +35,8 @@
                         <div class="card border-0" style="border-radius: 25px;">
                             <div class="p-4">
                                 <div style="text-align: center;">
-                                    <img style="width: 100px;border-radius: 5px;box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);" src="images/name.png">
+                                    <img style="width: 100px;border-radius: 5px;box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);"
+                                        src="images/name.png">
                                 </div>
 
                                 <h3>Login</h3>
@@ -59,10 +61,18 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-10">
+                                        <div class="col-8">
                                             <button class="btn btn-primary w-100" type="submit">Entrar</button>
                                         </div>
                                         <div class="col-2">
+                                            <a href="#"  onclick="fb_login();"><img src="./images/login/facebook.png" alt="" style="
+                                                width: 40px;
+                                                height: 40px;
+                                                cursor: pointer;
+                                            "></a>
+                                        </div>
+                                       
+                                        <div class="col-2" style="color-scheme: light;">
                                             <div id="g_id_onload"
                                                 data-client_id="645569247427-k0k7lg7dt7toghf8j4f6n373qq4076cg.apps.googleusercontent.com"
                                                 data-context="signin" data-ux_mode="popup"
@@ -74,6 +84,7 @@
                                                 data-theme="outline" data-text="signin" data-size="large">
                                             </div>
                                         </div>
+
                                     </div><!-- .row -->
                                 </form>
 
@@ -84,10 +95,12 @@
             </div><!-- .container -->
         </div>
     </div>
+    <div id="fb-root"></div>
     <script src="./assets/js/bundle.js?v131"></script>
     <script src="./assets/js/app.js?v131"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="./assets/js/custom/login.js"></script>
+    <script src="./assets/js/custom/facebook.js"></script>
 </body>
 
 </html>

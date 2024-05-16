@@ -48,24 +48,6 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
 });
 
 function handleCredentialResponse(response) {
-    decodeJwtResponse(response.credential);
-}
-
-function decodeJwtResponse(data) {
-    signIn(parseJwt(data))
-}
-
-function parseJwt(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-}
-// Callback function for successful sign-in
-function signIn(googleUser){
     const baseurl = localStorage.getItem('baseurl');
     // API endpoint URL
     const apiUrl = baseurl + 'api/Authenticator/Google';
@@ -77,12 +59,11 @@ function signIn(googleUser){
             'Content-Type': 'application/json',
             // Add any additional headers if needed
         },
-        body: JSON.stringify(googleUser),
+        body: JSON.stringify(response),
     })
         .then(response => {
             if (!response.ok) {
-            // throw new Error(`HTTP error! Status: ${response.status}`);
-               swal("Error", "Credenciales invalidas o usuario sin acceso", "error");
+               throw new Error("Credenciales invalidas o usuario sin acceso");
             }
             return response.json(); // Assuming your API returns JSON
         })
@@ -101,6 +82,6 @@ function signIn(googleUser){
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            swal("Error", "" + error, "error");
         });
 }
