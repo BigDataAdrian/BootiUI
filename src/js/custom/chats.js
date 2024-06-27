@@ -178,12 +178,12 @@ function GetProfile() {
             // Update the <span> elements with the response data
             document.getElementById("Email").textContent = data.username;
             document.getElementById("Name").textContent = data.name;
-            if (data.picture ==null){
+            if (data.picture == null) {
                 document.getElementById("Profilepicturemodal").src = "images/robot.png";
-            }else{
+            } else {
                 document.getElementById("Profilepicturemodal").src = baseurl + "api/Files/GetProfilePicture?imageName=" + data.picture;
             }
-          
+
         })
         .catch(error => {
             console.error("Error:", error);
@@ -357,15 +357,12 @@ function LoadChat(Chatusername) {
             const divElement = document.getElementById("InputType");
             const chatHelper = document.getElementById('Helper');
             const hint = document.getElementById('Hint')
-            var SendButton = document.getElementById("SendButton");
-            if (data.send) {
-                SendButton.style.display = "block";
-            } else {
-                SendButton.style.display = "none";
-            }
+            const send = document.getElementById('send');
+           
             // Set the new HTML content using innerHTML
             divElement.innerHTML = data.input;
             chatHelper.innerHTML = data.helper;
+            send.innerHTML = data.send;
             hint.innerHTML = data.hint;
             var chatSearchDiv = document.getElementById('tynChatSearch');
             if (data.hint !== "" && data.hint !== null) {
@@ -374,7 +371,7 @@ function LoadChat(Chatusername) {
             } else {
                 chatSearchDiv.classList.remove('active');
             }
-            
+
             chatReply.innerHTML = "";
             localStorage.setItem('last', data.last);
             let oldHeight = chatBody.scrollHeight;
@@ -477,6 +474,48 @@ function sendinput() {
             inputtext = "************"
         }
         message(inputValue, inputtext);
+    } else if (inputElement.tagName.toLowerCase() === 'table') {
+        // inputElement.style = "";
+
+        // Remove inline styles from table cells (td and th)
+        // var cells = inputElement.querySelectorAll("td, th");
+        // cells.forEach(function (cell) {
+        //     cell.style = "";
+        // });
+
+        // Remove <style> tags within the table
+        // var styleTags = inputElement.querySelectorAll("style");
+        // styleTags.forEach(function (styleTag) {
+        //     styleTag.parentNode.removeChild(styleTag);
+        // });
+        const tableBody = document.querySelector('#Message tbody');
+        const rows = tableBody.querySelectorAll('tr');
+
+        rows.forEach(row => {
+            const input = row.querySelector('input[name="name"]');
+            const select = row.querySelector('select[name="name"]');
+            const textarea = row.querySelector('textarea[name="name"]');
+            if (input) {
+                const inputValue = input.value;
+                input.outerHTML = inputValue; // Replace the input element with its value
+            }
+
+            if (select) {
+                const selectValue = select.options[select.selectedIndex].value;
+                select.outerHTML = selectValue; // Replace the select element with its selected value
+            }
+            if (textarea) {
+                const textareaValue = textarea.value;
+                textarea.outerHTML = textareaValue; // Replace the textarea element with its value
+            }
+        });
+
+        // Get the updated HTML content of the table
+        const updatedTableHTML = document.querySelector('#Message').outerHTML;
+        Message = updatedTableHTML.replace(" id=\"Message\"", "");//Tabla
+        const chatInputDiv = document.getElementById("InputType");
+        chatInputDiv.innerHTML = "";
+        message(Message, Message);
     }
 }
 
@@ -493,6 +532,13 @@ function message(value, text) {
     if (isExecuting) {
         console.log("Function is already running. Please wait.");
         return;
+    }
+
+    var messageDiv = document.getElementById("Message");
+    if (messageDiv) {
+        if (messageDiv.tagName === "INPUT" || messageDiv.tagName === "TEXTAREA") {
+            messageDiv.value = '';
+        }
     }
 
     // Set the flag to true to indicate that the function is executing
@@ -524,7 +570,7 @@ function message(value, text) {
     let chatBubble = `
         <div id="${uuid}" class="tyn-reply-bubble">
             <div class="tyn-reply-text">
-                ${getInput}
+                ${getInput.replace(/\n/g, "<br>")}
             </div>
         </div>
         `;
@@ -590,7 +636,7 @@ function answer(value, text) {
     let hint = '';
     let helper = '';
     let LastId = '';
-    let Send = false;
+    let send = '';
     //post
     // Define the data you want to send as the request body
     const requestData = {
@@ -642,7 +688,7 @@ function answer(value, text) {
             inputEntry = data.input;
             helper = data.helper;
             LastId = data.scrollId;
-            Send = data.send;
+            send = data.send;
             hint = data.hint;
         })
         .finally(() => {
@@ -671,12 +717,8 @@ function answer(value, text) {
                 const inputElement = divElement.querySelector("input");
                 const textareaElement = divElement.querySelector("textarea");
 
-                var SendButton = document.getElementById("SendButton");
-                if (Send) {
-                    SendButton.style.display = "block";
-                } else {
-                    SendButton.style.display = "none";
-                }
+                var SendButton = document.getElementById("Send");
+                SendButton.innerHTML = send;
                 // Check if the input element was found
                 if (inputElement) {
                     // Set focus to the input element
@@ -704,7 +746,7 @@ function answer(value, text) {
                 isExecuting = false;
             }, 250);
             const currentDivCount = chatReply.children.length;
-        
+
             // If the total count exceeds the maximum, remove the oldest divs
             if (currentDivCount > 40) {
                 const removeCount = currentDivCount - 40;
@@ -988,3 +1030,30 @@ function History() {
             console.error('Error:', error);
         });
 }
+function toggleColor(toggleId) {
+    var checkbox = document.getElementById(toggleId);
+    var label = document.querySelector('label[for=' + toggleId + ']');
+
+    if (checkbox.checked) {
+        label.style.backgroundColor = 'var(--bs-primary)';
+        label.style.color = 'white';
+    } else {
+        label.style.backgroundColor = 'var(--form-input-bg)';
+
+        label.style.color = 'var(--button-color)';
+    }
+}
+function getCheckedCheckboxes() {
+    var checkboxes = document.querySelectorAll('.toggle-button');
+    var checkedCheckboxes = [];
+    
+    checkboxes.forEach(function(checkbox) {
+      if (checkbox.checked) {
+        checkedCheckboxes.push(checkbox.id);
+      }
+    });
+
+    console.log('Checked Checkboxes:', checkedCheckboxes);
+    // You can return the array or use it as needed
+    return checkedCheckboxes;
+  }
